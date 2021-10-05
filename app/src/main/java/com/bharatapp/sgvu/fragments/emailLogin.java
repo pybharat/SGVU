@@ -77,7 +77,6 @@ public class emailLogin extends Fragment {
         View dialogView = LayoutInflater.from(getActivity().getApplicationContext()).inflate(R.layout.forgotpassword, viewGroup, false);
         builder.setView(dialogView);
         AlertDialog alertDialog = builder.create();
-        alertDialog.setCanceledOnTouchOutside(false);
         alertDialog.show();
         email2=dialogView.findViewById(R.id.email12);
         sendotp=dialogView.findViewById(R.id.otp1);
