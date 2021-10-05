@@ -69,7 +69,7 @@ public class login extends AppCompatActivity {
 
     }
 
-    private void loadfragment(Fragment fragment) {
+    public void loadfragment(Fragment fragment) {
         FragmentManager fm=getFragmentManager();
         FragmentTransaction fragmentTransaction=fm.beginTransaction();
         fragmentTransaction.replace(R.id.login1,fragment);

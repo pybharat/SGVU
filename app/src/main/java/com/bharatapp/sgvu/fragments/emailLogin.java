@@ -291,8 +291,7 @@ public class emailLogin extends Fragment {
                         if(Integer.parseInt(obj.get("code").toString())==200)
                         {
                             Toast.makeText(getActivity(),obj.getString("message"), Toast.LENGTH_SHORT).show();
-                            Intent i=new Intent(getActivity(), login.class);
-                            startActivity(i);
+
                         }
                         else if(Integer.parseInt(obj.get("code").toString())==400) {
                             msg= obj.getString("message");
