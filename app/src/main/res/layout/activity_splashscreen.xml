@@ -7,13 +7,17 @@
     android:layout_height="match_parent"
     tools:context=".activities.splashscreen">
 
-
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
         <ImageView
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="150dp"
             android:layout_marginLeft="@dimen/size_10sp"
             android:layout_marginTop="@dimen/size_50sp"
             android:scaleType="fitCenter"
+            android:id="@+id/naac1"
             android:src="@drawable/naac"/>
 
     <androidx.cardview.widget.CardView
@@ -21,9 +25,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="250dp"
-        android:layout_marginRight="10dp"
+        android:layout_margin="@dimen/size_10sp"
+       android:layout_gravity="center"
         android:layout_marginBottom="250dp"
         android:elevation="10dp"
         app:cardCornerRadius="20dp">
@@ -35,29 +38,26 @@
 
             <pl.droidsonroids.gif.GifImageView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="fill_parent"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="0dp"
                 android:layout_marginRight="10dp"
-
                 android:src="@drawable/gyanvihar" />
-
-
         </LinearLayout>
     </androidx.cardview.widget.CardView>
     <androidx.cardview.widget.CardView
         android:layout_width="@dimen/size_100sp"
         android:layout_height="@dimen/size_50sp"
-        app:cardCornerRadius="@dimen/size_30sp"
-        android:layout_marginTop="@dimen/size_600sp"
-
+        app:cardCornerRadius="@dimen/size_10sp"
+        android:layout_marginTop="@dimen/size_20sp"
         android:layout_marginLeft="@dimen/size_160sp"
         android:elevation="@dimen/size_25sp">
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-
         android:scaleType="fitCenter"
         android:src="@drawable/nirf"/>
     </androidx.cardview.widget.CardView>
+
+</LinearLayout>
 </RelativeLayout>

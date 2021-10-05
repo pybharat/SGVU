@@ -14,7 +14,7 @@
         app:cardCornerRadius="@dimen/size_30sp"
         android:layout_marginLeft="@dimen/size_50sp"
         android:layout_marginRight="@dimen/size_50sp"
-        android:layout_marginTop="@dimen/size_80sp"
+        android:layout_marginTop="@dimen/size_50sp"
         android:gravity="center">
 
         <LinearLayout

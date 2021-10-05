@@ -29,11 +29,10 @@
         android:layout_marginRight="@dimen/size_5sp"
         android:layout_marginBottom="@dimen/size_10sp"
         android:hint="E-Mail/Mobile No."
-
         >
 
         <EditText
-            android:id="@+id/emailaddress"
+            android:id="@+id/email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
@@ -62,7 +61,14 @@
             android:padding="15dp"
             android:inputType="textPassword" />
             </com.google.android.material.textfield.TextInputLayout>
-
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Forgot Password"
+    android:textColor="@color/light_blue"
+    android:gravity="right"
+    android:layout_marginRight="@dimen/size_5sp"
+    android:id="@+id/forgotpass"/>
     <Button
         android:id="@+id/login2"
         android:layout_width="match_parent"

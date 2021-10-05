@@ -13,7 +13,7 @@ import com.bharatapp.sgvu.activities.login;
 
 
 public class splashscreen extends AppCompatActivity {
-    private static int SPLASE_TIME_OUT=2700;
+    private static int SPLASE_TIME_OUT=3000;
     ImageView logo;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,5 +31,6 @@ public class splashscreen extends AppCompatActivity {
                 finish();
             }
         },SPLASE_TIME_OUT);
+
     }
     }
