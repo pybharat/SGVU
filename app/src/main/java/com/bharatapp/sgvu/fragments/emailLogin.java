@@ -1,7 +1,9 @@
 package com.bharatapp.sgvu.fragments;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import android.os.CountDownTimer;
@@ -47,6 +49,10 @@ public class emailLogin extends Fragment {
     RetrofitClient retrofitClient;
     TextView time1,resend;
     ProgressBar progressBar;
+    SharedPreferences sharedPreferences;
+    private  static  final String SHARED_PREF_NAME="sgvu";
+    private  static  final String KEY_USERID="userid";
+    private  static  final String KEY_TOKEN="token";
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -56,6 +62,7 @@ public class emailLogin extends Fragment {
         login1=view.findViewById(R.id.login2);
         for_pass=view.findViewById(R.id.forgotpass);
         retrofitClient=new RetrofitClient();
+        sharedPreferences= getActivity().getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         login1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -165,9 +172,11 @@ public class emailLogin extends Fragment {
                             Toast.makeText(getActivity(),msg, Toast.LENGTH_SHORT).show();
                             userid=Integer.parseInt(obj.get("userid").toString());
                             token=obj.getString("Token");
+                            SharedPreferences.Editor editor=sharedPreferences.edit();
+                            editor.putInt(KEY_USERID,userid);
+                            editor.putString(KEY_TOKEN,token);
+                            editor.apply();
                             Intent i=new Intent(getActivity(), dashboard.class);
-                            i.putExtra("userid",userid);
-                            i.putExtra("token",token);
                             startActivity(i);
                         }
                         else if(Integer.parseInt(obj.get("code").toString())==400) {

@@ -7,6 +7,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -44,6 +45,10 @@ import java.util.TimerTask;
 
 public class dashboard extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 View v,actionbar2;
+SharedPreferences sharedPreferences;
+private  static  final String SHARED_PREF_NAME="sgvu";
+private  static  final String KEY_USERID="userid";
+private  static  final String KEY_TOKEN="token";
 ImageView close,poster,actionimage;
 Toolbar toolbar;
 TextView maintitle;
@@ -65,6 +70,12 @@ BottomNavigationView bottomNavigationView;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
         maintitle=(TextView)findViewById(R.id.maintitle);
+
+        sharedPreferences=getSharedPreferences(SHARED_PREF_NAME,MODE_PRIVATE);
+        int userid=sharedPreferences.getInt(KEY_USERID,0);
+        String token=sharedPreferences.getString(KEY_TOKEN,null);
+        Toast.makeText(dashboard.this, String.valueOf(userid)+" "+token, Toast.LENGTH_SHORT).show();
+
         //viewpager
         ArrayList<SliderData> sliderDataArrayList = new ArrayList<>();
         sliderDataArrayList.add(new SliderData(url1));
@@ -194,7 +205,11 @@ BottomNavigationView bottomNavigationView;
                 }
                 break;
             case R.id.logout:
-                Toast.makeText(dashboard.this,"Log Out",Toast.LENGTH_SHORT).show();
+                SharedPreferences.Editor editor=sharedPreferences.edit();
+                editor.clear();
+                editor.commit();
+                Toast.makeText(dashboard.this,"LogOut Successfully.",Toast.LENGTH_SHORT).show();
+                finish();
                 break;
 
         }

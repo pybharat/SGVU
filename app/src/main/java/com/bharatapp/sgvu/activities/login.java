@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -19,10 +21,21 @@ public class login extends AppCompatActivity {
     TextView mobile,signup,heading;
     FrameLayout frameLayout;
    int count=1,count2=1;
+   SharedPreferences sharedPreferences;
+    private  static  final String SHARED_PREF_NAME="sgvu";
+    private  static  final String KEY_USERID="userid";
+    private  static  final String KEY_TOKEN="token";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        sharedPreferences=getSharedPreferences(SHARED_PREF_NAME,MODE_PRIVATE);
+        int userid=sharedPreferences.getInt(KEY_USERID,0);
+        if(userid!=0)
+        {
+            Intent i=new Intent(login.this,dashboard.class);
+            startActivity(i);
+        }
         mobile=(TextView) findViewById(R.id.mobile);
         heading=(TextView) findViewById(R.id.heading);
         signup=(TextView) findViewById(R.id.signup);
