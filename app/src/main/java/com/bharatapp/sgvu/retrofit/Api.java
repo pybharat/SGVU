@@ -40,6 +40,6 @@ public interface Api {
     );
     @POST("Dashboard/getnotices")
     Call<String> notice_call(
-            @Body JSONObject jsonObject
+            @Body JsonObject jsonObject
     );
 }

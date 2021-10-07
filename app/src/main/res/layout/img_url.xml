@@ -44,17 +44,7 @@
                         android:textColor="@color/design_dark_default_color_on_primary"
                         android:textSize="@dimen/size_20sp" />
 
-                    <TextView
-                        android:id="@+id/short_des"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/size_2sp"
-                        android:fontFamily="@font/medium"
-                        android:gravity="center_horizontal"
-                        android:justificationMode="inter_word"
-                        android:text="short_des"
-                        android:textColor="@color/material_grey_600"
-                        android:textSize="@dimen/size_13sp" />
+
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>

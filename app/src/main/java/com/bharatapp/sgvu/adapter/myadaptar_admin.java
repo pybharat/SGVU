@@ -79,10 +79,7 @@ public class myadaptar_admin extends RecyclerView.Adapter<myadaptar_admin.holder
                 intent.putExtra("id",nid);
                 intent.putExtra("title",title);
                 intent.putExtra("class",aclass);
-
                 ct.startActivity(intent);
-
-
         }
     }
 }
