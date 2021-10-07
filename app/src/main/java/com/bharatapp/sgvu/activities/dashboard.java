@@ -74,7 +74,6 @@ BottomNavigationView bottomNavigationView;
         sharedPreferences=getSharedPreferences(SHARED_PREF_NAME,MODE_PRIVATE);
         int userid=sharedPreferences.getInt(KEY_USERID,0);
         String token=sharedPreferences.getString(KEY_TOKEN,null);
-        Toast.makeText(dashboard.this, String.valueOf(userid)+" "+token, Toast.LENGTH_SHORT).show();
 
         //viewpager
         ArrayList<SliderData> sliderDataArrayList = new ArrayList<>();

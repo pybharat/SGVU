@@ -17,8 +17,11 @@ import android.widget.Toast;
 import com.bharatapp.sgvu.R;
 import com.bharatapp.sgvu.activities.login;
 import com.bharatapp.sgvu.adapter.myadaptar;
+import com.bharatapp.sgvu.model_class.allnotice;
+import com.bharatapp.sgvu.model_class.auth;
 import com.bharatapp.sgvu.model_class.notice_data;
 import com.bharatapp.sgvu.retrofit.RetrofitClient;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
@@ -55,7 +58,11 @@ public class updates extends Fragment {
         rcv = (RecyclerView)view.findViewById(R.id.rc1);
     rcv.setLayoutManager(new LinearLayoutManager(getActivity()));
     retrofitClient=new RetrofitClient();
-    notice_api();
+        try {
+            notice_api();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     /*    for (i = 1; i <= 10; i++)
         {
             notice_data l = new notice_data();
@@ -105,15 +112,16 @@ public class updates extends Fragment {
         return view;
     }
 
-    private void notice_api() {
+    private void notice_api() throws JSONException {
         sharedPreferences= getActivity().getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         int userid=sharedPreferences.getInt(KEY_USERID,0);
         String token=sharedPreferences.getString(KEY_TOKEN,null);
-        JsonObject jsonObject=new JsonObject();
+
+        auth auth=new auth();
         if(userid != 0 || token!=null)
         {
-            jsonObject.addProperty("id",userid);
-            jsonObject.addProperty("token",token);
+            auth.setId(userid);
+            auth.setToken(token);
         }
         else
         {
@@ -121,19 +129,26 @@ public class updates extends Fragment {
             Intent i=new Intent(getActivity(), login.class);
             startActivity(i);
         }
+        allnotice a1=new allnotice();
+        a1.setAuth(auth);
+        Gson gson = new Gson();
+        String json = gson.toJson(a1);
+        JSONObject jsonObject=new JSONObject(json);
 retrofitClient.getWebService().notice_call(jsonObject).enqueue(new Callback<String>() {
     @Override
     public void onResponse(Call<String> call, Response<String> response) {
         if(response.isSuccessful())
         {
             try {
-                JSONObject jsonObject=new JSONObject(response.body());
-                if(Integer.parseInt(jsonObject.getString("code"))==200)
+                JSONObject jsonObject2=new JSONObject(response.body());
+                Toast.makeText(getActivity(), jsonObject2.toString(), Toast.LENGTH_SHORT).show();
+                if(Integer.parseInt(jsonObject2.getString("code"))==200)
                 {
-                    JSONArray jsonArray= jsonObject.getJSONArray("message");
+                    JSONArray jsonArray= jsonObject2.getJSONArray("message");
                     for(int i=0;i<jsonArray.length();i++)
                     {
                         JSONObject jsonObject1= jsonArray.getJSONObject(i);
+
                         notice_data l = new notice_data();
                         l.setNid(String.valueOf(jsonObject1.getInt("id")));
                         l.setNtitle(jsonObject1.getString("title"));
@@ -154,9 +169,9 @@ retrofitClient.getWebService().notice_call(jsonObject).enqueue(new Callback<Stri
                         rcv.setAdapter(new myadaptar(getActivity(), list1s));
                     }
                 }
-                else if(Integer.parseInt(jsonObject.getString("code"))==400)
+                else if(Integer.parseInt(jsonObject2.getString("code"))==400)
                 {
-                    Toast.makeText(getActivity(),jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(),jsonObject2.getString("message"), Toast.LENGTH_SHORT).show();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

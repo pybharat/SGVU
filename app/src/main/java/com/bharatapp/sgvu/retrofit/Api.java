@@ -2,6 +2,8 @@ package com.bharatapp.sgvu.retrofit;
 
 import com.google.gson.JsonObject;
 
+import org.json.JSONObject;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
@@ -38,6 +40,6 @@ public interface Api {
     );
     @POST("Dashboard/getnotices")
     Call<String> notice_call(
-            @Body JsonObject jsonObject
+            @Body JSONObject jsonObject
     );
 }

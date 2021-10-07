@@ -3,7 +3,8 @@ package com.bharatapp.sgvu.model_class;
 public class auth {
     int id;
     String token;
-
+    public auth() {
+    }
     public auth(int id, String token) {
         this.id = id;
         this.token = token;
