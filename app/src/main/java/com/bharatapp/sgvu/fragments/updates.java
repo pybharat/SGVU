@@ -47,7 +47,6 @@ public class updates extends Fragment {
     private  static  final String SHARED_PREF_NAME="sgvu";
     private  static  final String KEY_USERID="userid";
     private  static  final String KEY_TOKEN="token";
-
     RetrofitClient retrofitClient;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -116,7 +115,6 @@ public class updates extends Fragment {
                         }
 
                         l.setDate1(String.valueOf(jsonObject1.get("created")));
-                        Toast.makeText(getActivity(),l.getImg_url(), Toast.LENGTH_SHORT).show();
                         list1s.add(l);
                         rcv.setAdapter(new myadaptar(getActivity(), list1s));
                     }

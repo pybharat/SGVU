@@ -42,4 +42,9 @@ public interface Api {
     Call<String> notice_call(
             @Body JsonObject jsonObject
     );
+
+    @POST("Dashboard/updatenoticeimg")
+    Call<String> updatenoticeimg(
+            @Body JsonObject jsonObject
+    );
 }

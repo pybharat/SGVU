@@ -4,7 +4,9 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -27,9 +29,19 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.bharatapp.sgvu.R;
+import com.bharatapp.sgvu.activities.login;
+import com.bharatapp.sgvu.retrofit.RetrofitClient;
+import com.google.gson.JsonObject;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class add_notice extends Fragment {
@@ -38,7 +50,14 @@ View view;
 EditText title,short_des,full_des;
 String ntitle,nshort_des,nfull_des,nimag;
 ImageButton img;
+String img1;
 Button add;
+int nid=1;
+RetrofitClient retrofitClient;
+SharedPreferences sharedPreferences;
+private  static  final String SHARED_PREF_NAME="sgvu";
+private  static  final String KEY_USERID="userid";
+private  static  final String KEY_TOKEN="token";
 private int PICK_IMAGE_REQUEST = 1;
 private static final int STORAGE_PERMISSION_CODE = 123;
 private Bitmap bitmap;
@@ -52,6 +71,7 @@ private Uri filePath;
         full_des=view.findViewById(R.id.f_des);
         img=view.findViewById(R.id.upload_img);
         add=view.findViewById(R.id.add_notice);
+        retrofitClient=new RetrofitClient();
         requestStoragePermission();
         add.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,7 +85,71 @@ private Uri filePath;
                 showFileChooser();
             }
         });
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                uploadImg(img1,nid);
+            }
+        });
         return view;
+    }
+
+    private void uploadImg(String img1,int nid) {
+        Toast.makeText(getActivity(), "dfgfjkdhkjn", Toast.LENGTH_SHORT).show();
+        sharedPreferences= getActivity().getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        int userid=sharedPreferences.getInt(KEY_USERID,0);
+        String token=sharedPreferences.getString(KEY_TOKEN,null);
+        JsonObject auth=new JsonObject();
+
+        if(userid != 0 || token!=null)
+        {
+            auth.addProperty("id",userid);
+            auth.addProperty("token",token);
+        }
+        else
+        {
+            Toast.makeText(getActivity(), "Login Again", Toast.LENGTH_SHORT).show();
+            Intent i=new Intent(getActivity(), login.class);
+            startActivity(i);
+        }
+        JsonObject image=new JsonObject();
+        image.addProperty("nid",nid);
+       image.addProperty("img",img1);
+        image.add("auth",auth);
+
+        retrofitClient.getWebService().updatenoticeimg(image).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+               Log.d("bharat123",response.body());
+                if(response.isSuccessful()) {
+                    try {
+                        JSONObject obj = new JSONObject(response.body());
+                        if(Integer.parseInt(obj.get("code").toString())==200)
+                        {
+                            Toast.makeText(getActivity(),obj.getString("message"), Toast.LENGTH_SHORT).show();
+
+                        }
+                        else if(Integer.parseInt(obj.get("code").toString())==400) {
+                            Toast.makeText(getActivity(),obj.getString("message"), Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+                else
+                {
+                    Toast.makeText(getActivity(), "Something went wrong", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+
+                Toast.makeText(getActivity(), t.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void addNotice() {
@@ -92,8 +176,8 @@ private Uri filePath;
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
                 byte[] byteArray = byteArrayOutputStream .toByteArray();
-                String img = Base64.encodeToString(byteArray, Base64.DEFAULT);
-                Log.d("bharat123",img);
+                img1 = Base64.encodeToString(byteArray, Base64.DEFAULT);
+
 
             } catch (IOException e) {
                 e.printStackTrace();
