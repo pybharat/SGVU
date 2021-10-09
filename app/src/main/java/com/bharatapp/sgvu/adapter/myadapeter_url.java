@@ -79,7 +79,7 @@ public class myadapeter_url extends RecyclerView.Adapter<myadapeter_url.holder>
             title=list1List.get(position).getUrl_title();
             url=list1List.get(position).getUrl();
             img_url=list1List.get(position).getImage_url();
-if(url=="https://mygyanvihar.com") {
+if(url=="https://mygyanvihar.com" || url=="https://seekho.live") {
     CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
     CustomTabsIntent customTabsIntent = builder.build();
     customTabsIntent.launchUrl(ct, Uri.parse(url));

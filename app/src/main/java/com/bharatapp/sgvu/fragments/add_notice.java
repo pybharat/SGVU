@@ -50,9 +50,9 @@ View view;
 EditText title,short_des,full_des;
 String ntitle,nshort_des,nfull_des,nimag;
 ImageButton img;
-String img1;
+String img1,setImg;
 Button add;
-int nid=1;
+int nid,count=0;
 RetrofitClient retrofitClient;
 SharedPreferences sharedPreferences;
 private  static  final String SHARED_PREF_NAME="sgvu";
@@ -82,16 +82,59 @@ private Uri filePath;
         img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                count=1;
                 showFileChooser();
             }
         });
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                uploadImg(img1,nid);
+                if(count==0)
+                {
+
+                }
+                else if(count==1){
+                    uploadtext();
+                    uploadImg(img1, nid);
+                }
             }
         });
         return view;
+    }
+
+    private void uploadtext() {
+        ntitle=title.getText().toString();
+        nshort_des=short_des.getText().toString();
+        nfull_des=full_des.getText().toString();
+        if(img1==null) {
+            nimag = "https://seekho.live/bharat-sir/slider/h3.jpg";
+        }
+        else
+        {
+            nimag=setImg;
+        }
+        sharedPreferences= getActivity().getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        int userid=sharedPreferences.getInt(KEY_USERID,0);
+        String token=sharedPreferences.getString(KEY_TOKEN,null);
+        JsonObject auth=new JsonObject();
+
+        if(userid != 0 || token!=null)
+        {
+            auth.addProperty("id",userid);
+            auth.addProperty("token",token);
+        }
+        else
+        {
+            Toast.makeText(getActivity(), "Login Again", Toast.LENGTH_SHORT).show();
+            Intent i=new Intent(getActivity(), login.class);
+            startActivity(i);
+        }
+        JsonObject noticedata=new JsonObject();
+        noticedata.addProperty("title",ntitle);
+        noticedata.addProperty("short_des",nshort_des);
+        noticedata.addProperty("full_des",nfull_des);
+        noticedata.addProperty("img_url",nimag);
+        noticedata.add("auth",auth);
     }
 
     private void uploadImg(String img1,int nid) {
@@ -120,13 +163,12 @@ private Uri filePath;
         retrofitClient.getWebService().updatenoticeimg(image).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-               Log.d("bharat123",response.body());
                 if(response.isSuccessful()) {
                     try {
                         JSONObject obj = new JSONObject(response.body());
                         if(Integer.parseInt(obj.get("code").toString())==200)
                         {
-                            Toast.makeText(getActivity(),obj.getString("message"), Toast.LENGTH_SHORT).show();
+                            setImg=obj.get("message").toString();
 
                         }
                         else if(Integer.parseInt(obj.get("code").toString())==400) {
