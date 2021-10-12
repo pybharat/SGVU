@@ -51,7 +51,7 @@ EditText title,short_des,full_des;
 String ntitle,nshort_des,nfull_des,nimag;
 ImageButton img;
 String img1,setImg;
-Button add;
+Button add,upload;
 int nid,count=0;
 RetrofitClient retrofitClient;
 SharedPreferences sharedPreferences;
@@ -71,32 +71,28 @@ private Uri filePath;
         full_des=view.findViewById(R.id.f_des);
         img=view.findViewById(R.id.upload_img);
         add=view.findViewById(R.id.add_notice);
+        upload=view.findViewById(R.id.uploadimg);
         retrofitClient=new RetrofitClient();
         requestStoragePermission();
-        add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addNotice();
-            }
-        });
+
         img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                count=1;
                 showFileChooser();
+                upload.setVisibility(View.VISIBLE);
+            }
+        });
+        upload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                uploadImg(img1, nid);
             }
         });
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(count==0)
-                {
-
-                }
-                else if(count==1){
                     uploadtext();
-                    uploadImg(img1, nid);
-                }
+
             }
         });
         return view;
@@ -106,8 +102,24 @@ private Uri filePath;
         ntitle=title.getText().toString();
         nshort_des=short_des.getText().toString();
         nfull_des=full_des.getText().toString();
+        if(ntitle.isEmpty())
+        {
+            title.requestFocus();
+            title.setError("Enter Title");
+            return;
+        }
+        else if(nshort_des.isEmpty())
+        {
+            short_des.requestFocus();
+            short_des.setError("Enter Short Description.");
+        }
+        else if(nfull_des.isEmpty())
+        {
+            full_des.requestFocus();
+            full_des.setError("Enter Full Description.");
+        }
         if(img1==null) {
-            nimag = "https://seekho.live/bharat-sir/slider/h3.jpg";
+            nimag = "h2.png";
         }
         else
         {
@@ -135,10 +147,41 @@ private Uri filePath;
         noticedata.addProperty("full_des",nfull_des);
         noticedata.addProperty("img_url",nimag);
         noticedata.add("auth",auth);
+        retrofitClient.getWebService().insertnotice(noticedata).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if(response.isSuccessful()) {
+                    try {
+                        JSONObject obj = new JSONObject(response.body());
+                        if(Integer.parseInt(obj.get("code").toString())==200)
+                        {
+                            Toast.makeText(getActivity(),obj.getString("message"), Toast.LENGTH_SHORT).show();
+                        }
+                        else if(Integer.parseInt(obj.get("code").toString())==400) {
+                            Toast.makeText(getActivity(),obj.getString("message"), Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+                else
+                {
+                    Toast.makeText(getActivity(), "Something went wrong", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Toast.makeText(getActivity(), t.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     private void uploadImg(String img1,int nid) {
-        Toast.makeText(getActivity(), "dfgfjkdhkjn", Toast.LENGTH_SHORT).show();
+
         sharedPreferences= getActivity().getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         int userid=sharedPreferences.getInt(KEY_USERID,0);
         String token=sharedPreferences.getString(KEY_TOKEN,null);
@@ -157,9 +200,9 @@ private Uri filePath;
         }
         JsonObject image=new JsonObject();
         image.addProperty("nid",nid);
-       image.addProperty("img",img1);
+        image.addProperty("img",img1);
         image.add("auth",auth);
-
+        Log.d("bharat12345",image.toString());
         retrofitClient.getWebService().updatenoticeimg(image).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
@@ -194,12 +237,7 @@ private Uri filePath;
         });
     }
 
-    private void addNotice() {
-         ntitle=title.getText().toString();
-        nshort_des=short_des.getText().toString();
-        nfull_des=full_des.getText().toString();
 
-    }
     private void showFileChooser() {
         Intent intent = new Intent();
         intent.setType("image/*");

@@ -47,4 +47,9 @@ public interface Api {
     Call<String> updatenoticeimg(
             @Body JsonObject jsonObject
     );
+
+    @POST("Dashboard/insertnotice")
+    Call<String> insertnotice(
+            @Body JsonObject jsonObject
+    );
 }
