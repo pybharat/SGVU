@@ -155,7 +155,13 @@ private Uri filePath;
                         JSONObject obj = new JSONObject(response.body());
                         if(Integer.parseInt(obj.get("code").toString())==200)
                         {
-                            Toast.makeText(getActivity(),obj.getString("message"), Toast.LENGTH_SHORT).show();
+                            title.setText("");
+                            short_des.setText("");
+                            full_des.setText("");
+                            img.setBackground(getResources().getDrawable(R.drawable.upload_image));
+                            upload.setVisibility(View.INVISIBLE);
+                            Toast.makeText(getActivity(),"Notice Added", Toast.LENGTH_SHORT).show();
+
                         }
                         else if(Integer.parseInt(obj.get("code").toString())==400) {
                             Toast.makeText(getActivity(),obj.getString("message"), Toast.LENGTH_SHORT).show();
@@ -175,6 +181,7 @@ private Uri filePath;
             @Override
             public void onFailure(Call<String> call, Throwable t) {
                 Toast.makeText(getActivity(), t.toString(), Toast.LENGTH_SHORT).show();
+
             }
         });
 
@@ -212,6 +219,7 @@ private Uri filePath;
                         if(Integer.parseInt(obj.get("code").toString())==200)
                         {
                             setImg=obj.get("message").toString();
+                            Toast.makeText(getActivity(),"Image Uploaded", Toast.LENGTH_SHORT).show();
 
                         }
                         else if(Integer.parseInt(obj.get("code").toString())==400) {

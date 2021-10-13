@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.bharatapp.sgvu.R;
 import com.bharatapp.sgvu.fragments.add_notice;
+import com.bharatapp.sgvu.fragments.add_poster;
 import com.bharatapp.sgvu.fragments.update_notice;
 
 public class admin_panel extends AppCompatActivity {
@@ -45,6 +46,11 @@ public class admin_panel extends AppCompatActivity {
         {
             loadfragment(new update_notice());
             heading.setText("UPDATE NOTICE");
+        }
+        else if (position==2)
+        {
+            loadfragment(new add_poster());
+            heading.setText("ADD POSTER");
         }
     }
     private void loadfragment(Fragment fragment) {

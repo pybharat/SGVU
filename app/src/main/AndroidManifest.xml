@@ -23,7 +23,7 @@
             android:parentActivityName=".activities.dashboard" />
         <activity
             android:name=".activities.admin_panel"
-            android:parentActivityName=".activities.dashboard" />
+            android:parentActivityName=".activities.dashboard" android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".activities.dashboard" />
         <activity android:name=".activities.login" />
         <activity

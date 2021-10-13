@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -38,19 +39,14 @@ public class detail_notice extends AppCompatActivity {
             img_url = bundle.getString("img_url");
             date2 = bundle.getString("date1");
         }
+        Log.d("bharat123","aa   "+img_url);
         title.setText(ntitle);
         date1.setText(date2);
         full_des.setText(nfull_des);
-        if(img_url=="no")
-        {
-            imageView.setImageResource(R.drawable.default_notice);
-        }
-        else
-        {
+
             Glide.with(this)
                     .load(img_url)
-                    .centerCrop()
                     .into(imageView);
-        }
+
     }
 }

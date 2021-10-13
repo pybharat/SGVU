@@ -42,7 +42,7 @@ public class myadapeter_url extends RecyclerView.Adapter<myadapeter_url.holder>
     @Override
     public void onBindViewHolder(@NonNull holder holder, int position) {
         holder.notice_title.setText(list1List.get(position).getUrl_title());
-        holder.short_des.setText(list1List.get(position).getUrl());
+
         Glide.with(ct)
                 .load(list1List.get(position).getImage_url())
                 .fitCenter()
@@ -60,13 +60,13 @@ public class myadapeter_url extends RecyclerView.Adapter<myadapeter_url.holder>
     class holder extends RecyclerView.ViewHolder implements View.OnClickListener
     {
 
-        TextView notice_title,short_des;
+        TextView notice_title;
         ImageView img_url;
         public holder(@NonNull View itemView) {
             super(itemView);
 
             notice_title=(TextView)itemView.findViewById(R.id.notice_til);
-            short_des=(TextView)itemView.findViewById(R.id.short_des);
+
             img_url=(ImageView)itemView.findViewById(R.id.img_url);
             itemView.setOnClickListener(this);
         }

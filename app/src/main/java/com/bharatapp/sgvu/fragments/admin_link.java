@@ -44,7 +44,12 @@ public class admin_link extends Fragment {
         l1.setAclass("update_notice");
         l1.setImage_url("https://seekho.live/bharat-sir/slider/gyanviharnewlogo.png");
         list1s.add(l1);
-
+        admin_url_data l2 = new admin_url_data();
+        l2.setId("3");
+        l2.setTitle("ADD POSTER");
+        l2.setAclass("add_poster");
+        l2.setImage_url("https://seekho.live/bharat-sir/slider/gyanviharnewlogo.png");
+        list1s.add(l2);
         rcv.setAdapter(new myadaptar_admin(getActivity(), list1s));
         return view;
     }

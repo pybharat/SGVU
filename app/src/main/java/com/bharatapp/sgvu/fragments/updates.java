@@ -9,6 +9,7 @@ import android.os.Bundle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -104,19 +105,13 @@ public class updates extends Fragment {
                         l.setNtitle(jsonObject1.getString("title"));
                         l.setNshort_des(jsonObject1.getString("short_des"));
                         l.setNfull_des(jsonObject1.getString("full_des"));
-                        if(jsonObject1.getString("img_url")=="NO")
-                        {
-                            l.setImg_url("https://seekho.live/bharat-sir/slider/h2.png");
-
-                        }
-                        else
-                        {
-                            l.setImg_url(jsonObject1.getString("img_url"));
-                        }
-
-                        l.setDate1(String.valueOf(jsonObject1.get("created")));
-                        list1s.add(l);
-                        rcv.setAdapter(new myadaptar(getActivity(), list1s));
+                       String s1=jsonObject1.getString("img_url");
+                       String s2="https://seekho.live/bharat-sir/sgvuapi/assets/notices/"+s1;
+                        Log.d("bharat123",s2);
+                       l.setImg_url(s2);
+                       l.setDate1(String.valueOf(jsonObject1.get("created")));
+                       list1s.add(l);
+                       rcv.setAdapter(new myadaptar(getActivity(), list1s));
                     }
                 }
                 else if(Integer.parseInt(jsonObject2.getString("code"))==400)
