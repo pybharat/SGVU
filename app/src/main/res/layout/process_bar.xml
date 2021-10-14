@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/size_70sp"
+    android:layout_height="@dimen/size_70sp"
+    android:background="@drawable/process_cust"
+    android:gravity="center">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <ImageView
+        android:id="@+id/pro"
+        android:layout_width="@dimen/size_50sp"
+        android:layout_height="@dimen/size_50sp"
+        android:foregroundGravity="center"
+        android:src="@drawable/gyanviharnewlogo" />
+</RelativeLayout>

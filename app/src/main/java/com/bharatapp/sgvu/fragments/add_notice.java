@@ -30,6 +30,7 @@ import androidx.core.content.ContextCompat;
 
 import com.bharatapp.sgvu.R;
 import com.bharatapp.sgvu.activities.login;
+import com.bharatapp.sgvu.process;
 import com.bharatapp.sgvu.retrofit.RetrofitClient;
 import com.google.gson.JsonObject;
 
@@ -55,6 +56,7 @@ Button add,upload;
 int nid,count=0;
 RetrofitClient retrofitClient;
 SharedPreferences sharedPreferences;
+
 private  static  final String SHARED_PREF_NAME="sgvu";
 private  static  final String KEY_USERID="userid";
 private  static  final String KEY_TOKEN="token";
@@ -62,6 +64,7 @@ private int PICK_IMAGE_REQUEST = 1;
 private static final int STORAGE_PERMISSION_CODE = 123;
 private Bitmap bitmap;
 private Uri filePath;
+public process process;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -74,7 +77,7 @@ private Uri filePath;
         upload=view.findViewById(R.id.uploadimg);
         retrofitClient=new RetrofitClient();
         requestStoragePermission();
-
+        process process=new process(getActivity());
         img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,12 +88,14 @@ private Uri filePath;
         upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                process.show();
                 uploadImg(img1, nid);
             }
         });
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                process.show();
                     uploadtext();
 
             }
@@ -151,6 +156,7 @@ private Uri filePath;
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 if(response.isSuccessful()) {
+                    process.dismiss();
                     try {
                         JSONObject obj = new JSONObject(response.body());
                         if(Integer.parseInt(obj.get("code").toString())==200)
@@ -214,6 +220,7 @@ private Uri filePath;
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 if(response.isSuccessful()) {
+                    process.dismiss();
                     try {
                         JSONObject obj = new JSONObject(response.body());
                         if(Integer.parseInt(obj.get("code").toString())==200)
