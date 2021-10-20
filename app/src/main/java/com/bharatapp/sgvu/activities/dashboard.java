@@ -53,18 +53,21 @@ ImageView close,poster,actionimage;
 Toolbar toolbar;
 TextView maintitle;
 BottomNavigationView bottomNavigationView;
-    public DrawerLayout drawerLayout;
-    NavigationView navigationView;
-    public ActionBarDrawerToggle actionBarDrawerToggle;
-    ViewPager viewPager;
-    int currentPage = 0;
-    Timer timer;
-    final long DELAY_MS = 500;
-    final long PERIOD_MS = 3000;
-    String url1 = "https://seekho.live/bharat-sir/slider/h3.jpg";
-    String url2 = "https://seekho.live/bharat-sir/slider/h2.png";
-    String url3 = "https://seekho.live/bharat-sir/slider/h1.jpg";
-    String url4 = "https://seekho.live/bharat-sir/slider/h4.jpg";
+public View dialogView;
+public AlertDialog alertDialog;
+public DrawerLayout drawerLayout;
+NavigationView navigationView;
+public ActionBarDrawerToggle actionBarDrawerToggle;
+ViewPager viewPager;
+int currentPage = 0;
+int p_count=0;
+Timer timer;
+final long DELAY_MS = 500;
+final long PERIOD_MS = 3000;
+String url1 = "https://seekho.live/bharat-sir/slider/h3.jpg";
+String url2 = "https://seekho.live/bharat-sir/slider/h2.png";
+String url3 = "https://seekho.live/bharat-sir/slider/h1.jpg";
+String url4 = "https://seekho.live/bharat-sir/slider/h4.jpg";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,15 +108,17 @@ BottomNavigationView bottomNavigationView;
         }, DELAY_MS, PERIOD_MS);
 
         //custom dialog
-        AlertDialog.Builder builder = new AlertDialog.Builder(dashboard.this);
-        ViewGroup viewGroup = findViewById(android.R.id.content);
-        View dialogView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.customview, viewGroup, false);
-        builder.setView(dialogView);
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-        close=(ImageView)dialogView.findViewById(R.id.clo);
-        poster=(ImageView)dialogView.findViewById(R.id.pos);
-        toolbar=findViewById(R.id.actionbar1);
+        if(p_count==0) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(dashboard.this);
+            ViewGroup viewGroup = findViewById(android.R.id.content);
+            dialogView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.customview, viewGroup, false);
+            builder.setView(dialogView);
+            alertDialog = builder.create();
+            alertDialog.show();
+                   }
+        close = (ImageView) dialogView.findViewById(R.id.clo);
+        poster = (ImageView) dialogView.findViewById(R.id.pos);
+        toolbar = findViewById(R.id.actionbar1);
         setSupportActionBar(toolbar);
         //navigation drawer
         drawerLayout=findViewById(R.id.drawer_layout);
@@ -130,6 +135,7 @@ BottomNavigationView bottomNavigationView;
         close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                p_count=1;
                 alertDialog.dismiss();
             }
         });

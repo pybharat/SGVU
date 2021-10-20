@@ -26,6 +26,7 @@ import androidx.appcompat.app.AlertDialog;
 import com.bharatapp.sgvu.R;
 import com.bharatapp.sgvu.activities.dashboard;
 import com.bharatapp.sgvu.activities.login;
+import com.bharatapp.sgvu.process;
 import com.bharatapp.sgvu.retrofit.RetrofitClient;
 import com.google.gson.JsonObject;
 import org.json.JSONException;
@@ -53,6 +54,7 @@ public class emailLogin extends Fragment {
     private  static  final String SHARED_PREF_NAME="sgvu";
     private  static  final String KEY_USERID="userid";
     private  static  final String KEY_TOKEN="token";
+    public process process;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -63,9 +65,11 @@ public class emailLogin extends Fragment {
         for_pass=view.findViewById(R.id.forgotpass);
         retrofitClient=new RetrofitClient();
         sharedPreferences= getActivity().getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        process=new process(getActivity());
         login1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                process.show();
                 loginCall();
             }
         });
@@ -112,6 +116,7 @@ public class emailLogin extends Fragment {
                             Toast.makeText(getActivity(),obj.getString("message"), Toast.LENGTH_SHORT).show();
                             otp=Integer.parseInt(obj.get("otp").toString());
                             email3=obj.get("email").toString();
+                            process.dismiss();
                             verifyotp(otp,email3);
                         }
                         else if(Integer.parseInt(obj.get("code").toString())==400) {

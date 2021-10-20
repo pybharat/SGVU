@@ -52,4 +52,13 @@ public interface Api {
     Call<String> insertnotice(
             @Body JsonObject jsonObject
     );
+    @POST("Dashboard/updateposterimg")
+    Call<String> updateposterimg(
+            @Body JsonObject jsonObject
+    );
+    @POST("Dashboard/insertposter")
+    Call<String> insertposter(
+            @Body JsonObject jsonObject
+    );
+
 }

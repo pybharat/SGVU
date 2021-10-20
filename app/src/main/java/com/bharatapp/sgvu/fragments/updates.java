@@ -21,6 +21,7 @@ import com.bharatapp.sgvu.adapter.myadaptar;
 import com.bharatapp.sgvu.model_class.allnotice;
 import com.bharatapp.sgvu.model_class.auth;
 import com.bharatapp.sgvu.model_class.notice_data;
+import com.bharatapp.sgvu.process;
 import com.bharatapp.sgvu.retrofit.RetrofitClient;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -49,6 +50,7 @@ public class updates extends Fragment {
     private  static  final String KEY_USERID="userid";
     private  static  final String KEY_TOKEN="token";
     RetrofitClient retrofitClient;
+    public process process;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -57,8 +59,10 @@ public class updates extends Fragment {
         list1s = new ArrayList<>();
         rcv = (RecyclerView)view.findViewById(R.id.rc1);
     rcv.setLayoutManager(new LinearLayoutManager(getActivity()));
+    process=new process(getActivity());
     retrofitClient=new RetrofitClient();
         try {
+            process.show();
             notice_api();
         } catch (JSONException e) {
             e.printStackTrace();
@@ -89,6 +93,7 @@ public class updates extends Fragment {
         retrofitClient.getWebService().notice_call(notice).enqueue(new Callback<String>() {
     @Override
     public void onResponse(Call<String> call, Response<String> response) {
+        process.dismiss();
         if(response.isSuccessful())
         {
             try {

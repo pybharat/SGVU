@@ -77,7 +77,7 @@ public process process;
         upload=view.findViewById(R.id.uploadimg);
         retrofitClient=new RetrofitClient();
         requestStoragePermission();
-        process process=new process(getActivity());
+        process=new process(getActivity());
         img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -156,7 +156,7 @@ public process process;
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 if(response.isSuccessful()) {
-                    process.dismiss();
+
                     try {
                         JSONObject obj = new JSONObject(response.body());
                         if(Integer.parseInt(obj.get("code").toString())==200)
@@ -164,8 +164,10 @@ public process process;
                             title.setText("");
                             short_des.setText("");
                             full_des.setText("");
-                            img.setBackground(getResources().getDrawable(R.drawable.upload_image));
+                            title.requestFocus();
+                            img.setImageDrawable(getResources().getDrawable(R.drawable.upload_image));
                             upload.setVisibility(View.INVISIBLE);
+                            process.dismiss();
                             Toast.makeText(getActivity(),"Notice Added", Toast.LENGTH_SHORT).show();
 
                         }
@@ -175,7 +177,6 @@ public process process;
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-
                 }
                 else
                 {
@@ -220,14 +221,14 @@ public process process;
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 if(response.isSuccessful()) {
-                    process.dismiss();
+
                     try {
                         JSONObject obj = new JSONObject(response.body());
                         if(Integer.parseInt(obj.get("code").toString())==200)
                         {
                             setImg=obj.get("message").toString();
                             Toast.makeText(getActivity(),"Image Uploaded", Toast.LENGTH_SHORT).show();
-
+                            process.dismiss();
                         }
                         else if(Integer.parseInt(obj.get("code").toString())==400) {
                             Toast.makeText(getActivity(),obj.getString("message"), Toast.LENGTH_SHORT).show();
