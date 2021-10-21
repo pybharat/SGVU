@@ -60,5 +60,8 @@ public interface Api {
     Call<String> insertposter(
             @Body JsonObject jsonObject
     );
-
+    @POST("Dashboard/getposter")
+    Call<String> getposter(
+            @Body JsonObject jsonObject
+    );
 }

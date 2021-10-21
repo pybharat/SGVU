@@ -18,12 +18,9 @@ import android.widget.Toast;
 import com.bharatapp.sgvu.R;
 import com.bharatapp.sgvu.activities.login;
 import com.bharatapp.sgvu.adapter.myadaptar;
-import com.bharatapp.sgvu.model_class.allnotice;
-import com.bharatapp.sgvu.model_class.auth;
 import com.bharatapp.sgvu.model_class.notice_data;
 import com.bharatapp.sgvu.process;
 import com.bharatapp.sgvu.retrofit.RetrofitClient;
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
@@ -112,7 +109,6 @@ public class updates extends Fragment {
                         l.setNfull_des(jsonObject1.getString("full_des"));
                        String s1=jsonObject1.getString("img_url");
                        String s2="https://seekho.live/bharat-sir/sgvuapi/assets/notices/"+s1;
-                        Log.d("bharat123",s2);
                        l.setImg_url(s2);
                        l.setDate1(String.valueOf(jsonObject1.get("created")));
                        list1s.add(l);

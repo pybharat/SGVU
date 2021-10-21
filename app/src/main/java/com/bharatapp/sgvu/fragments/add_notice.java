@@ -216,7 +216,7 @@ public process process;
         image.addProperty("nid",nid);
         image.addProperty("img",img1);
         image.add("auth",auth);
-        Log.d("bharat12345",image.toString());
+
         retrofitClient.getWebService().updatenoticeimg(image).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {

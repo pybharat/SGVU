@@ -89,13 +89,13 @@
                     android:textStyle="bold"
                     android:textColor="@color/navi_blue"
                     android:layout_marginBottom="@dimen/size_5sp"
+                    android:visibility="gone"
                     android:layout_marginLeft="@dimen/size_30sp"/>
 
                 <TextView
                     android:id="@+id/signup"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-
                     android:text="New User!SignUp"
                     android:textSize="@dimen/size_18sp"
                     android:textStyle="bold"

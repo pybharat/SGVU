@@ -6,11 +6,15 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,17 +39,30 @@ import com.bharatapp.sgvu.fragments.admin_link;
 import com.bharatapp.sgvu.model_class.SliderData;
 import com.bharatapp.sgvu.fragments.important_link;
 import com.bharatapp.sgvu.fragments.updates;
+import com.bharatapp.sgvu.retrofit.RetrofitClient;
+import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+import com.google.gson.JsonObject;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 
 public class dashboard extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 View v,actionbar2;
+RetrofitClient retrofitClient;
 SharedPreferences sharedPreferences;
+String pid,ptitle,pfull_des,img_url,date1;
 private  static  final String SHARED_PREF_NAME="sgvu";
 private  static  final String KEY_USERID="userid";
 private  static  final String KEY_TOKEN="token";
@@ -106,16 +123,18 @@ String url4 = "https://seekho.live/bharat-sir/slider/h4.jpg";
                 handler.post(Update);
             }
         }, DELAY_MS, PERIOD_MS);
-
         //custom dialog
-        if(p_count==0) {
+
             AlertDialog.Builder builder = new AlertDialog.Builder(dashboard.this);
             ViewGroup viewGroup = findViewById(android.R.id.content);
             dialogView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.customview, viewGroup, false);
+            retrofitClient=new RetrofitClient();
+            fetchpost(dialogView);
             builder.setView(dialogView);
             alertDialog = builder.create();
+            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             alertDialog.show();
-                   }
+
         close = (ImageView) dialogView.findViewById(R.id.clo);
         poster = (ImageView) dialogView.findViewById(R.id.pos);
         toolbar = findViewById(R.id.actionbar1);
@@ -143,6 +162,11 @@ String url4 = "https://seekho.live/bharat-sir/slider/h4.jpg";
             @Override
             public void onClick(View v) {
                 Intent i=new Intent(dashboard.this, detail_notice.class);
+                i.putExtra("nid",pid);
+                i.putExtra("ntitle",ptitle);
+                i.putExtra("nfull_des",pfull_des);
+                i.putExtra("img_url",img_url);
+                i.putExtra("date1",date1);
                 startActivity(i);
             }
         });
@@ -175,6 +199,71 @@ String url4 = "https://seekho.live/bharat-sir/slider/h4.jpg";
 
 
 
+    }
+
+    private void fetchpost(View dialogView) {
+
+        sharedPreferences= getApplicationContext().getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        int userid=sharedPreferences.getInt(KEY_USERID,0);
+        String token=sharedPreferences.getString(KEY_TOKEN,null);
+        JsonObject auth=new JsonObject();
+
+        if(userid != 0 || token!=null)
+        {
+            auth.addProperty("id",userid);
+            auth.addProperty("token",token);
+        }
+        else
+        {
+            Toast.makeText(getApplicationContext(), "Login Again", Toast.LENGTH_SHORT).show();
+            Intent i=new Intent(getApplicationContext(), login.class);
+            startActivity(i);
+        }
+        JsonObject noticedata=new JsonObject();
+        noticedata.add("auth",auth);
+        retrofitClient.getWebService().getposter(noticedata).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if(response.isSuccessful())
+                {
+                    try {
+                        JSONObject obj = new JSONObject(response.body());
+                        if(Integer.parseInt(obj.get("code").toString())==200)
+                        { JSONArray jsonArray= obj.getJSONArray("message");
+                            for(int i=0;i<jsonArray.length();i++) {
+                                JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+
+                                pid = jsonObject1.get("id").toString();
+                                ptitle = jsonObject1.get("title").toString();
+                                pfull_des = jsonObject1.get("full_des").toString();
+                                date1 = jsonObject1.get("created").toString();
+                                img_url = "https://seekho.live/bharat-sir/sgvuapi/assets/poster/" + jsonObject1.get("img_url").toString();
+                                Glide.with(getApplicationContext())
+                                        .load(img_url)
+                                        .fitCenter()
+                                        .into(poster);
+                            }
+                        }
+                        else if(Integer.parseInt(obj.get("code").toString())==400) {
+                            Toast.makeText(getApplicationContext(),obj.getString("message"), Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+                else
+                {
+                    Toast.makeText(getApplicationContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Toast.makeText(dashboard.this, t.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 

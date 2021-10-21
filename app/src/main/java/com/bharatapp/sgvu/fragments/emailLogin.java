@@ -4,6 +4,8 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import android.os.CountDownTimer;
@@ -88,6 +90,7 @@ public class emailLogin extends Fragment {
         View dialogView = LayoutInflater.from(getActivity().getApplicationContext()).inflate(R.layout.forgotpassword, viewGroup, false);
         builder.setView(dialogView);
         AlertDialog alertDialog = builder.create();
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         alertDialog.show();
         email2=dialogView.findViewById(R.id.email12);
         sendotp=dialogView.findViewById(R.id.otp1);
@@ -214,6 +217,7 @@ public class emailLogin extends Fragment {
         View dialogView = LayoutInflater.from(getActivity().getApplicationContext()).inflate(R.layout.otpverification, viewGroup, false);
         builder.setView(dialogView);
         AlertDialog alertDialog = builder.create();
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         alertDialog.setCanceledOnTouchOutside(false);
         timer(dialogView);
         alertDialog.show();
