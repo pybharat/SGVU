@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.bharatapp.sgvu.R;
+import com.bharatapp.sgvu.activities.Update_notice;
 import com.bharatapp.sgvu.activities.admin_panel;
 import com.bharatapp.sgvu.activities.detail_notice;
 import com.bharatapp.sgvu.model_class.notice_data;
@@ -90,8 +91,7 @@ public class myadaptar extends RecyclerView.Adapter<myadaptar.holder>
             }
             else if(s1=="admin")
             {
-                Intent intent = new Intent(ct, admin_panel.class);
-
+                Intent intent = new Intent(ct, Update_notice.class);
                 intent.putExtra("nid", nid);
                 intent.putExtra("ntitle", ntitle);
                 intent.putExtra("nshort_des", nshort_des);

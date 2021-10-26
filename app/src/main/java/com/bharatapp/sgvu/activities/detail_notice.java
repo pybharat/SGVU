@@ -45,6 +45,7 @@ public class detail_notice extends AppCompatActivity {
 
             Glide.with(this)
                     .load(img_url)
+                    .centerCrop()
                     .into(imageView);
 
     }

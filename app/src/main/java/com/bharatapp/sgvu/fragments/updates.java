@@ -52,7 +52,7 @@ public class updates extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Bundle bundle =getActivity().getIntent().getExtras();
+        Bundle bundle =getArguments();
 
         if (bundle != null) {
             admin = bundle.getString("admin");

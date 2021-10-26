@@ -19,6 +19,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -42,7 +43,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class Update_notice extends AppCompatActivity {
-    String nid,ntitle,nfull_des,img_url,date2,nshort_des,img1,setImg,nimag;
+    String nid,ntitle,nfull_des,img_url,date2,nshort_des,img1,setImg,nimag,img_url2;
     EditText title,short_des,full_des;
     Button upload,update;
     ImageButton img;
@@ -70,6 +71,7 @@ public class Update_notice extends AppCompatActivity {
         Toolbar toolbar=(Toolbar)findViewById(R.id.actionbar1);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        retrofitClient=new RetrofitClient();
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             nid = bundle.getString("nid");
@@ -79,6 +81,8 @@ public class Update_notice extends AppCompatActivity {
             img_url = bundle.getString("img_url");
             date2 = bundle.getString("date1");
         }
+        img_url2=img_url.replaceAll("https://seekho.live/bharat-sir/sgvuapi/assets/notices/","");
+        Log.d("bharat123",img_url2);
         title.setText(ntitle);
         short_des.setText(nshort_des);
         full_des.setText(nfull_des);
@@ -128,7 +132,7 @@ public class Update_notice extends AppCompatActivity {
             full_des.setError("Enter Full Description.");
         }
         if(img1==null) {
-            nimag = "h2.png";
+            nimag = img_url2;
         }
         else
         {
@@ -151,12 +155,46 @@ public class Update_notice extends AppCompatActivity {
             startActivity(i);
         }
         JsonObject noticedata=new JsonObject();
+        noticedata.addProperty("nid",nid);
         noticedata.addProperty("title",ntitle);
         noticedata.addProperty("short_des",nshort_des);
         noticedata.addProperty("full_des",nfull_des);
         noticedata.addProperty("img_url",nimag);
         noticedata.add("auth",auth);
-        Toast.makeText(this, noticedata.toString(), Toast.LENGTH_SHORT).show();
+        Log.d("bharat123",noticedata.toString());
+        retrofitClient.getWebService().updatenotice(noticedata).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if(response.isSuccessful()) {
+
+                    try {
+                        JSONObject obj = new JSONObject(response.body());
+                        if(Integer.parseInt(obj.get("code").toString())==200)
+                        {
+                            process.dismiss();
+                            Toast.makeText(Update_notice.this,"Notice Updated", Toast.LENGTH_SHORT).show();
+                            Intent i=new Intent(Update_notice.this,dashboard.class);
+                            startActivity(i);
+                        }
+                        else if(Integer.parseInt(obj.get("code").toString())==400) {
+                            Toast.makeText(Update_notice.this,obj.getString("message"), Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else
+                {
+                    Toast.makeText(Update_notice.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+
+            }
+        });
     }
 
     private void uploadImg(String img1, String nid) {
