@@ -35,7 +35,7 @@ public class admin_link extends Fragment {
         admin_url_data l = new admin_url_data();
         l.setId("1");
         l.setTitle("ADD NOTICE");
-       l.setAclass("add_notice");
+        l.setAclass("add_notice");
         l.setImage_url("https://seekho.live/bharat-sir/slider/gyanviharnewlogo.png");
         list1s.add(l);
         admin_url_data l1 = new admin_url_data();

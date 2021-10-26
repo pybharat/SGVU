@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import com.bharatapp.sgvu.R;
+import com.bharatapp.sgvu.activities.admin_panel;
 import com.bharatapp.sgvu.activities.detail_notice;
 import com.bharatapp.sgvu.model_class.notice_data;
 
@@ -22,10 +23,12 @@ public class myadaptar extends RecyclerView.Adapter<myadaptar.holder>
 {
     List<notice_data> list1List;
     Context ct;
-    public myadaptar(Context ct,List<notice_data> list1List)
+    String s1;
+    public myadaptar(Context ct,List<notice_data> list1List,String s1)
     {
         this.list1List = list1List;
         this.ct=ct;
+        this.s1=s1;
     }
 
     @NonNull
@@ -68,20 +71,35 @@ public class myadaptar extends RecyclerView.Adapter<myadaptar.holder>
         @Override
         public void onClick(View v) {
             int position=getAdapterPosition();
-            String nid,ntitle,nfull_des,img_url,date1;
+            String nid,ntitle,nfull_des,img_url,date1,nshort_des;
             nid=list1List.get(position).getNid();
+            nshort_des=list1List.get(position).getNshort_des();
             ntitle=list1List.get(position).getNtitle();
             nfull_des=list1List.get(position).getNfull_des();
             img_url=list1List.get(position).getImg_url();
             date1=list1List.get(position).getDate1();
-            Intent intent=new Intent(ct, detail_notice.class);
-            intent.putExtra("nid",nid);
-            intent.putExtra("ntitle",ntitle);
-            intent.putExtra("nfull_des",nfull_des);
-            intent.putExtra("img_url",img_url);
-            intent.putExtra("date1",date1);
-            ct.startActivity(intent);
+            if(s1=="normal") {
+                Intent intent = new Intent(ct, detail_notice.class);
+                intent.putExtra("nid", nid);
+                intent.putExtra("ntitle", ntitle);
+                intent.putExtra("nshort_des", nshort_des);
+                intent.putExtra("nfull_des", nfull_des);
+                intent.putExtra("img_url", img_url);
+                intent.putExtra("date1", date1);
+                ct.startActivity(intent);
+            }
+            else if(s1=="admin")
+            {
+                Intent intent = new Intent(ct, admin_panel.class);
 
+                intent.putExtra("nid", nid);
+                intent.putExtra("ntitle", ntitle);
+                intent.putExtra("nshort_des", nshort_des);
+                intent.putExtra("nfull_des", nfull_des);
+                intent.putExtra("img_url", img_url);
+                intent.putExtra("date1", date1);
+                ct.startActivity(intent);
+            }
         }
     }
 }

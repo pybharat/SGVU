@@ -7,13 +7,11 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.bharatapp.sgvu.R;
 import com.bharatapp.sgvu.fragments.add_notice;
 import com.bharatapp.sgvu.fragments.change_password;
-import com.bharatapp.sgvu.fragments.update_notice;
 import com.bharatapp.sgvu.fragments.update_profile;
 
 public class user_update extends AppCompatActivity {

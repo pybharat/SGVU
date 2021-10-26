@@ -8,12 +8,11 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bharatapp.sgvu.R;
 import com.bharatapp.sgvu.fragments.add_notice;
 import com.bharatapp.sgvu.fragments.add_poster;
-import com.bharatapp.sgvu.fragments.update_notice;
+import com.bharatapp.sgvu.fragments.updates;
 
 public class admin_panel extends AppCompatActivity {
     String nid,ntitle,aclass;
@@ -44,7 +43,11 @@ public class admin_panel extends AppCompatActivity {
         }
         else if (position==1)
         {
-            loadfragment(new update_notice());
+            updates update=new updates();
+            Bundle bundle1=new Bundle();
+            bundle1.putString("admin","admin");
+            update.setArguments(bundle1);
+            loadfragment(update);
             heading.setText("UPDATE NOTICE");
         }
         else if (position==2)

@@ -42,6 +42,7 @@ public class updates extends Fragment {
     List<notice_data> list1s;
     View view;
     int i;
+    String admin="normal";
     SharedPreferences sharedPreferences;
     private  static  final String SHARED_PREF_NAME="sgvu";
     private  static  final String KEY_USERID="userid";
@@ -51,6 +52,12 @@ public class updates extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Bundle bundle =getActivity().getIntent().getExtras();
+
+        if (bundle != null) {
+            admin = bundle.getString("admin");
+
+        }
         view=inflater.inflate(R.layout.fragment_updates, container, false);
 
         list1s = new ArrayList<>();
@@ -112,7 +119,8 @@ public class updates extends Fragment {
                        l.setImg_url(s2);
                        l.setDate1(String.valueOf(jsonObject1.get("created")));
                        list1s.add(l);
-                       rcv.setAdapter(new myadaptar(getActivity(), list1s));
+                       rcv.setAdapter(new myadaptar(getActivity(), list1s,admin));
+                        
                     }
                 }
                 else if(Integer.parseInt(jsonObject2.getString("code"))==400)

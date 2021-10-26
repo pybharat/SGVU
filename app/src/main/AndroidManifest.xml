@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -13,7 +14,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SGVU"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.user_update"></activity>
+        <activity android:name=".activities.Update_notice"></activity>
+        <activity android:name=".activities.user_update" />
         <activity
             android:name=".activities.profile"
             android:parentActivityName=".activities.dashboard" />
@@ -23,7 +25,8 @@
             android:parentActivityName=".activities.dashboard" />
         <activity
             android:name=".activities.admin_panel"
-            android:parentActivityName=".activities.dashboard" android:windowSoftInputMode="adjustPan"/>
+            android:parentActivityName=".activities.dashboard"
+            android:windowSoftInputMode="adjustPan" />
         <activity android:name=".activities.dashboard" />
         <activity android:name=".activities.login" />
         <activity
