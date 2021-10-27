@@ -68,4 +68,12 @@ public interface Api {
     Call<String> updatenotice(
             @Body JsonObject jsonObject
     );
+    @POST("Dashboard/updateprofileimg")
+    Call<String> updateprofileimg(
+            @Body JsonObject jsonObject
+    );
+    @POST("Dashboard/getuserinfo")
+    Call<String> getuserinfo(
+            @Body JsonObject jsonObject
+    );
 }

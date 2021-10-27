@@ -82,7 +82,7 @@ public class Update_notice extends AppCompatActivity {
             date2 = bundle.getString("date1");
         }
         img_url2=img_url.replaceAll("https://seekho.live/bharat-sir/sgvuapi/assets/notices/","");
-        Log.d("bharat123",img_url2);
+
         title.setText(ntitle);
         short_des.setText(nshort_des);
         full_des.setText(nfull_des);
@@ -161,7 +161,7 @@ public class Update_notice extends AppCompatActivity {
         noticedata.addProperty("full_des",nfull_des);
         noticedata.addProperty("img_url",nimag);
         noticedata.add("auth",auth);
-        Log.d("bharat123",noticedata.toString());
+
         retrofitClient.getWebService().updatenotice(noticedata).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {

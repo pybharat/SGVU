@@ -2,6 +2,9 @@ package com.bharatapp.sgvu.activities;
 
 
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -9,11 +12,16 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -28,6 +36,8 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -39,7 +49,9 @@ import com.bharatapp.sgvu.fragments.admin_link;
 import com.bharatapp.sgvu.model_class.SliderData;
 import com.bharatapp.sgvu.fragments.important_link;
 import com.bharatapp.sgvu.fragments.updates;
+import com.bharatapp.sgvu.model_class.userinfo_data;
 import com.bharatapp.sgvu.retrofit.RetrofitClient;
+import com.bharatapp.sgvu.userinfo;
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -49,6 +61,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -62,19 +76,23 @@ public class dashboard extends AppCompatActivity implements NavigationView.OnNav
 View v,actionbar2;
 RetrofitClient retrofitClient;
 SharedPreferences sharedPreferences;
-String pid,ptitle,pfull_des,img_url,date1;
+String pid,ptitle,pfull_des,img_url,date1,img1;
 private  static  final String SHARED_PREF_NAME="sgvu";
 private  static  final String KEY_USERID="userid";
 private  static  final String KEY_TOKEN="token";
 ImageView close,poster,actionimage;
 Toolbar toolbar;
-TextView maintitle;
+TextView maintitle,u_name;
 BottomNavigationView bottomNavigationView;
 public View dialogView;
 public AlertDialog alertDialog;
 public DrawerLayout drawerLayout;
 NavigationView navigationView;
 public ActionBarDrawerToggle actionBarDrawerToggle;
+private int PICK_IMAGE_REQUEST = 1;
+private static final int STORAGE_PERMISSION_CODE = 123;
+private Bitmap bitmap;
+private Uri filePath;
 ViewPager viewPager;
 int currentPage = 0;
 int p_count=0;
@@ -90,7 +108,7 @@ String url4 = "https://seekho.live/bharat-sir/slider/h4.jpg";
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
         maintitle=(TextView)findViewById(R.id.maintitle);
-
+        u_name=findViewById(R.id.user_name);
         sharedPreferences=getSharedPreferences(SHARED_PREF_NAME,MODE_PRIVATE);
         int userid=sharedPreferences.getInt(KEY_USERID,0);
         String token=sharedPreferences.getString(KEY_TOKEN,null);
@@ -124,7 +142,7 @@ String url4 = "https://seekho.live/bharat-sir/slider/h4.jpg";
             }
         }, DELAY_MS, PERIOD_MS);
         //custom dialog
-
+        profile_header();
             AlertDialog.Builder builder = new AlertDialog.Builder(dashboard.this);
             ViewGroup viewGroup = findViewById(android.R.id.content);
             dialogView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.customview, viewGroup, false);
@@ -151,6 +169,7 @@ String url4 = "https://seekho.live/bharat-sir/slider/h4.jpg";
         loadfragment(new updates());
         actionimage=findViewById(R.id.aq);
         actionimage.setImageResource(R.drawable.gyanviharnewlogo);
+
         close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -199,6 +218,71 @@ String url4 = "https://seekho.live/bharat-sir/slider/h4.jpg";
 
 
 
+    }
+
+    public void profile_header() {
+
+
+        sharedPreferences= getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        int userid1=sharedPreferences.getInt(KEY_USERID,0);
+        userinfo userinfo1=new userinfo(userid1,dashboard.this);
+        userinfo_data userinfo_data1=new userinfo_data();
+        userinfo_data1=userinfo1.getuserinfo();
+
+    }
+
+    private void upload_img() {
+        sharedPreferences= getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        int userid=sharedPreferences.getInt(KEY_USERID,0);
+        String token=sharedPreferences.getString(KEY_TOKEN,null);
+        JsonObject auth=new JsonObject();
+
+        if(userid != 0 || token!=null)
+        {
+            auth.addProperty("id",userid);
+            auth.addProperty("token",token);
+        }
+        else
+        {
+            Toast.makeText(getApplicationContext(), "Login Again", Toast.LENGTH_SHORT).show();
+            Intent i=new Intent(getApplicationContext(), login.class);
+            startActivity(i);
+        }
+        JsonObject image=new JsonObject();
+        image.addProperty("userid",userid);
+        image.addProperty("img",img1);
+        image.add("auth",auth);
+        retrofitClient.getWebService().updateprofileimg(image).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if(response.isSuccessful()) {
+
+                    try {
+                        JSONObject obj = new JSONObject(response.body());
+                        if(Integer.parseInt(obj.get("code").toString())==200)
+                        {
+                            Toast.makeText(getApplicationContext(),"Image Uploaded", Toast.LENGTH_SHORT).show();
+                        }
+                        else if(Integer.parseInt(obj.get("code").toString())==400) {
+                            Toast.makeText(getApplicationContext(),obj.getString("message"), Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+                else
+                {
+                    Toast.makeText(getApplicationContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Toast.makeText(dashboard.this, t.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void fetchpost(View dialogView) {
@@ -309,5 +393,78 @@ String url4 = "https://seekho.live/bharat-sir/slider/h4.jpg";
         }
         drawerLayout.closeDrawer(GravityCompat.START);
         return true;
+    }
+    private void showFileChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
+            filePath = data.getData();
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
+                actionimage.setImageBitmap(bitmap);
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+                byte[] byteArray = byteArrayOutputStream .toByteArray();
+                img1 = Base64.encodeToString(byteArray, Base64.DEFAULT);
+
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    public String getPath(Uri uri) {
+        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+        cursor.moveToFirst();
+        String document_id = cursor.getString(0);
+        document_id = document_id.substring(document_id.lastIndexOf(":") + 1);
+        cursor.close();
+
+        cursor = getContentResolver().query(
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                null, MediaStore.Images.Media._ID + " = ? ", new String[]{document_id}, null);
+        cursor.moveToFirst();
+        String path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+        cursor.close();
+
+        return path;
+    }
+    //Requesting permission
+    private void requestStoragePermission() {
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+            return;
+
+        if (ActivityCompat.shouldShowRequestPermissionRationale(dashboard.this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            //If the user has denied the permission previously your code will come to this block
+            //Here you can explain why you need this permission
+            //Explain here why you need this permission
+        }
+        //And finally ask for the permission
+        ActivityCompat.requestPermissions(dashboard.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
+    }
+    @SuppressLint("MissingSuperCall")
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        //Checking the request code of our request
+
+        if (requestCode == STORAGE_PERMISSION_CODE) {
+
+            //If permission is granted
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //Displaying a toast
+                Toast.makeText(getApplicationContext(), "Permission granted now you can read the storage", Toast.LENGTH_LONG).show();
+            } else {
+                //Displaying another toast if permission is not granted
+                Toast.makeText(getApplicationContext(), "Oops you just denied the permission", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 }
