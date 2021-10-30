@@ -73,7 +73,7 @@ public interface Api {
             @Body JsonObject jsonObject
     );
     @POST("Dashboard/getuserinfo")
-    Call<String> getuserinfo(
+    Call<String>getuserinfo(
             @Body JsonObject jsonObject
     );
 }

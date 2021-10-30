@@ -39,10 +39,13 @@ public class webview extends Activity implements AdvancedWebView.Listener {
                         startActivity(i);
                         return true;
                     case R.id.profile:
-                        Toast.makeText(webview.this,"profile selected",Toast.LENGTH_SHORT).show();
+                        Intent i1=new Intent(webview.this,profile.class);
+                        startActivity(i1);
                         return true;
                     case R.id.lms:
-                        Toast.makeText(webview.this,"Same",Toast.LENGTH_SHORT).show();
+                        Intent i2=new Intent(webview.this, webview.class);
+                        i2.putExtra("url","https://mygyanvihar.com/2020");
+                        startActivity(i2);
                         return true;
                     default:return false;
                 }

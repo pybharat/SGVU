@@ -37,7 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="@dimen/size_5sp"
-            android:text="Your Name"
+            android:text="Hello! User"
             android:textSize="@dimen/size_25sp"
             android:layout_gravity="center_vertical"
             android:textStyle="bold"
