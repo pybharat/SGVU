@@ -51,7 +51,6 @@ import com.bharatapp.sgvu.fragments.important_link;
 import com.bharatapp.sgvu.fragments.updates;
 import com.bharatapp.sgvu.model_class.userinfo_data;
 import com.bharatapp.sgvu.retrofit.RetrofitClient;
-import com.bharatapp.sgvu.userinfo;
 import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -77,10 +76,11 @@ View v,actionbar2;
 RetrofitClient retrofitClient;
 SharedPreferences sharedPreferences;
 String pid,ptitle,pfull_des,img_url,date1,img1;
+String u_name1,img_u,email,contact;
 private  static  final String SHARED_PREF_NAME="sgvu";
 private  static  final String KEY_USERID="userid";
 private  static  final String KEY_TOKEN="token";
-ImageView close,poster,actionimage;
+ImageView close,poster,actionimage,actionimage1;
 Toolbar toolbar;
 TextView maintitle,u_name;
 BottomNavigationView bottomNavigationView;
@@ -108,7 +108,7 @@ String url4 = "https://seekho.live/bharat-sir/slider/h4.jpg";
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
         maintitle=(TextView)findViewById(R.id.maintitle);
-        u_name=findViewById(R.id.user_name);
+
         sharedPreferences=getSharedPreferences(SHARED_PREF_NAME,MODE_PRIVATE);
         int userid=sharedPreferences.getInt(KEY_USERID,0);
         String token=sharedPreferences.getString(KEY_TOKEN,null);
@@ -142,7 +142,7 @@ String url4 = "https://seekho.live/bharat-sir/slider/h4.jpg";
             }
         }, DELAY_MS, PERIOD_MS);
         //custom dialog
-        profile_header();
+
             AlertDialog.Builder builder = new AlertDialog.Builder(dashboard.this);
             ViewGroup viewGroup = findViewById(android.R.id.content);
             dialogView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.customview, viewGroup, false);
@@ -167,8 +167,11 @@ String url4 = "https://seekho.live/bharat-sir/slider/h4.jpg";
         navigationView.setNavigationItemSelectedListener(this);
 //load notice fragment
         loadfragment(new updates());
-        actionimage=findViewById(R.id.aq);
-        actionimage.setImageResource(R.drawable.gyanviharnewlogo);
+        View hView =  navigationView.getHeaderView(0);
+
+        actionimage1=hView.findViewById(R.id.aq);
+        u_name=hView.findViewById(R.id.user_name);
+
 
         close.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -220,16 +223,7 @@ String url4 = "https://seekho.live/bharat-sir/slider/h4.jpg";
 
     }
 
-    public void profile_header() {
 
-
-        sharedPreferences= getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
-        int userid1=sharedPreferences.getInt(KEY_USERID,0);
-        userinfo userinfo1=new userinfo(userid1,dashboard.this);
-        userinfo_data userinfo_data1=new userinfo_data();
-        userinfo_data1=userinfo1.getuserinfo();
-
-    }
 
     private void upload_img() {
         sharedPreferences= getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
@@ -442,9 +436,7 @@ String url4 = "https://seekho.live/bharat-sir/slider/h4.jpg";
             return;
 
         if (ActivityCompat.shouldShowRequestPermissionRationale(dashboard.this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-            //If the user has denied the permission previously your code will come to this block
-            //Here you can explain why you need this permission
-            //Explain here why you need this permission
+
         }
         //And finally ask for the permission
         ActivityCompat.requestPermissions(dashboard.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
@@ -466,5 +458,69 @@ String url4 = "https://seekho.live/bharat-sir/slider/h4.jpg";
                 Toast.makeText(getApplicationContext(), "Oops you just denied the permission", Toast.LENGTH_LONG).show();
             }
         }
+    }
+    private void getuserinfo() {
+        sharedPreferences = getApplicationContext().getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        int userid = sharedPreferences.getInt(KEY_USERID, 0);
+        String token = sharedPreferences.getString(KEY_TOKEN, null);
+        JsonObject auth = new JsonObject();
+
+        if (userid != 0 || token != null) {
+            auth.addProperty("id", userid);
+            auth.addProperty("token", token);
+        } else {
+            Toast.makeText(getApplicationContext(), "Login Again", Toast.LENGTH_SHORT).show();
+        }
+        JsonObject user = new JsonObject();
+        user.addProperty("userid", userid);
+        user.add("auth", auth);
+
+        retrofitClient.getWebService().getuserinfo(user).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+
+                if (response.isSuccessful()) {
+                    try {
+                        JSONObject obj = new JSONObject(response.body());
+                        if (Integer.parseInt(obj.get("code").toString()) == 200) {
+                            JSONArray jsonArray=obj.getJSONArray("message");
+                            JSONObject jsonObject=jsonArray.getJSONObject(0);
+                            u_name1=jsonObject.getString("user_firstname");
+                            contact=jsonObject.getString("user_mobile");
+                            email=jsonObject.getString("user_email");
+                            img_u=jsonObject.getString("profile_image");
+                            if(img_u.isEmpty())
+                            {
+                                img_u="https://www.seekho.live/bharat-sir/sgvuapi/assets/profile/default.jpeg";
+                            }
+                            else
+                            {
+                                img_u="https://www.seekho.live/bharat-sir/sgvuapi/assets/profile/"+img_u;
+                            }
+                            Glide.with(dashboard.this)
+                                    .load(img_u)
+                                    .centerCrop()
+                                    .into(actionimage1);
+                            u_name.setText(u_name1);
+
+                        } else if (Integer.parseInt(obj.get("code").toString()) == 400) {
+                            Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
+
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                } else {
+                    Toast.makeText(getApplicationContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Toast.makeText(dashboard.this, t.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

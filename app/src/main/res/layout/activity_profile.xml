@@ -31,6 +31,7 @@
             app:cardCornerRadius="@dimen/size_10sp"
             >
             <ImageView
+                android:id="@+id/img"
                 android:layout_width="match_parent"
                 android:layout_height="fill_parent"
                 android:scaleType="centerCrop"
@@ -38,9 +39,10 @@
         </androidx.cardview.widget.CardView>
 
             <TextView
+                android:id="@+id/name"
                 android:layout_width="match_parent"
                 android:layout_height="fill_parent"
-                android:text="Bharat Bhushan Singhal"
+                android:text="SGVU"
                 android:textSize="@dimen/size_25sp"
                 android:textStyle="bold"
                 android:fontFamily="@font/black"
@@ -79,11 +81,12 @@
 
             </androidx.cardview.widget.CardView>
             <TextView
+                android:id="@+id/contact1"
                 android:layout_width="match_parent"
                 android:layout_height="fill_parent"
                 android:layout_marginTop="@dimen/size_20sp"
                 android:layout_gravity="center_vertical"
-                android:text="9462624610"
+                android:text="0000000000"
                 android:textSize="@dimen/size_20sp"
                 android:textStyle="bold"
                 android:fontFamily="@font/black"
@@ -121,11 +124,12 @@
 
             </androidx.cardview.widget.CardView>
             <TextView
+                android:id="@+id/email1"
                 android:layout_width="match_parent"
                 android:layout_height="fill_parent"
                 android:layout_marginTop="@dimen/size_20sp"
                 android:layout_gravity="center_vertical"
-                android:text="bharat.bhushan@mygyanvihar.com"
+                android:text="abc@mygyanvihar.com"
                 android:textSize="@dimen/size_20sp"
                 android:textStyle="bold"
                 android:fontFamily="@font/black"
