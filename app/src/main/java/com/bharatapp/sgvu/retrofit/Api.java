@@ -38,6 +38,10 @@ public interface Api {
     Call<String> resendforgototp(
             @Body JsonObject jsonObject
     );
+    @POST("Auth/resetpassword")
+    Call<String> resetpassword(
+            @Body JsonObject jsonObject
+    );
     @POST("Dashboard/getnotices")
     Call<String> notice_call(
             @Body JsonObject jsonObject

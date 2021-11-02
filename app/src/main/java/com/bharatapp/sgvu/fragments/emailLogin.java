@@ -44,10 +44,10 @@ import retrofit2.Response;
 
 public class emailLogin extends Fragment {
     View view;
-    EditText email,password,email2,otp1,otp2,otp3,otp4,otp5,otp6;
-    Button login1,sendotp,verifyotp;
+    EditText email,password,email2,otp1,otp2,otp3,otp4,otp5,otp6,pass1,cpass;
+    Button login1,sendotp,verifyotp,change;
     int userid,otp;
-    String msg,token,email1,email3;
+    String msg,token,email1,email3,c_pass,cc_pass;
     TextView for_pass;
     RetrofitClient retrofitClient;
     TextView time1,resend;
@@ -171,6 +171,7 @@ public class emailLogin extends Fragment {
         retrofitClient.getWebService().loginApi(jsonObject).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
+                process.dismiss();
                 if(response.isSuccessful()) {
                     try {
                         JSONObject obj = new JSONObject(response.body());
@@ -184,10 +185,13 @@ public class emailLogin extends Fragment {
                             editor.putInt(KEY_USERID,userid);
                             editor.putString(KEY_TOKEN,token);
                             editor.apply();
+                            email.setText("");
+                            password.setText("");
                             Intent i=new Intent(getActivity(), dashboard.class);
                             startActivity(i);
                         }
                         else if(Integer.parseInt(obj.get("code").toString())==400) {
+                            process.dismiss();
                             msg= obj.getString("message");
                             Toast.makeText(getActivity(),msg, Toast.LENGTH_SHORT).show();
                         }
@@ -198,6 +202,7 @@ public class emailLogin extends Fragment {
                 }
                 else
                 {
+                    process.dismiss();
                     Toast.makeText(getActivity(), "Something went wrong", Toast.LENGTH_SHORT).show();
                 }
 
@@ -205,7 +210,7 @@ public class emailLogin extends Fragment {
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-
+                process.dismiss();
                 Toast.makeText(getActivity(), t.toString(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -308,7 +313,7 @@ public class emailLogin extends Fragment {
                         JSONObject obj = new JSONObject(response.body());
                         if(Integer.parseInt(obj.get("code").toString())==200)
                         {
-                            Toast.makeText(getActivity(),obj.getString("message"), Toast.LENGTH_SHORT).show();
+                            change_pass();
 
                         }
                         else if(Integer.parseInt(obj.get("code").toString())==400) {
@@ -335,6 +340,83 @@ public class emailLogin extends Fragment {
         });
 
 
+    }
+
+    private void change_pass() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        ViewGroup viewGroup = view.findViewById(android.R.id.content);
+        View dialogView = LayoutInflater.from(getActivity().getApplicationContext()).inflate(R.layout.change_password, viewGroup, false);
+        builder.setView(dialogView);
+        AlertDialog alertDialog = builder.create();
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        alertDialog.show();
+        pass1=dialogView.findViewById(R.id.pass1);
+        cpass=dialogView.findViewById(R.id.cpass1);
+        change=dialogView.findViewById(R.id.change);
+        change.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                save_pass();
+            }
+        });
+    }
+
+    private void save_pass() {
+        String c_pass=pass1.getText().toString();
+        String cc_pass=cpass.getText().toString();
+    if(c_pass.isEmpty())
+    {
+        pass1.requestFocus();
+        pass1.setError("Enter Password");
+        return;
+    }
+    else if (cc_pass.isEmpty())
+    {
+        cpass.requestFocus();
+        cpass.setError("Enter Password");
+        return;
+    }
+    else if (c_pass!=cc_pass)
+    {
+        cpass.requestFocus();
+        cpass.setError("Password didn't Match");
+        return;
+    }
+    else if (c_pass.length()<8)
+    {
+        pass1.requestFocus();
+        pass1.setError("Minimum 8 characters");
+        return;
+    }
+        JsonObject jsonObject=new JsonObject();
+        jsonObject.addProperty("email",email3);
+        jsonObject.addProperty("password",c_pass);
+        retrofitClient.getWebService().resetpassword(jsonObject).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if (response.isSuccessful())
+                {
+                    try {
+                        JSONObject jsonObject1=new JSONObject(response.body());
+                        if(Integer.parseInt(jsonObject1.get("code").toString())==200)
+                        {
+                            Toast.makeText(getActivity(), "Password changed successfully.", Toast.LENGTH_SHORT).show();
+                        }
+                        else
+                        {
+                            Toast.makeText(getActivity(), "Something gone wrong.", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Toast.makeText(getActivity(), t.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void timer(View view) {
