@@ -345,82 +345,9 @@ public class emailLogin extends Fragment {
 
     }
 
-    private void change_pass() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        ViewGroup viewGroup = view.findViewById(android.R.id.content);
-        View dialogView = LayoutInflater.from(getActivity().getApplicationContext()).inflate(R.layout.changepass, viewGroup, false);
-        builder.setView(dialogView);
-        AlertDialog alertDialog = builder.create();
-        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        alertDialog.show();
-        pass1=dialogView.findViewById(R.id.pass1);
-        cpass=dialogView.findViewById(R.id.cpass1);
-        change=dialogView.findViewById(R.id.change);
-        change.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                save_pass();
-            }
-        });
-    }
 
-    private void save_pass() {
-        String c_pass=pass1.getText().toString();
-        String cc_pass=cpass.getText().toString();
-    if(c_pass.isEmpty())
-    {
-        pass1.requestFocus();
-        pass1.setError("Enter Password");
-        return;
-    }
-    else if (cc_pass.isEmpty())
-    {
-        cpass.requestFocus();
-        cpass.setError("Enter Password");
-        return;
-    }
-    else if (c_pass!=cc_pass)
-    {
-        cpass.requestFocus();
-        cpass.setError("Password didn't Match");
-        return;
-    }
-    else if (c_pass.length()<8)
-    {
-        pass1.requestFocus();
-        pass1.setError("Minimum 8 characters");
-        return;
-    }
-        JsonObject jsonObject=new JsonObject();
-        jsonObject.addProperty("email",email3);
-        jsonObject.addProperty("password",c_pass);
-        retrofitClient.getWebService().resetpassword(jsonObject).enqueue(new Callback<String>() {
-            @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                if (response.isSuccessful())
-                {
-                    try {
-                        JSONObject jsonObject1=new JSONObject(response.body());
-                        if(Integer.parseInt(jsonObject1.get("code").toString())==200)
-                        {
-                            Toast.makeText(getActivity(), "Password changed successfully.", Toast.LENGTH_SHORT).show();
-                        }
-                        else
-                        {
-                            Toast.makeText(getActivity(), "Something gone wrong.", Toast.LENGTH_SHORT).show();
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
 
-            @Override
-            public void onFailure(Call<String> call, Throwable t) {
-                Toast.makeText(getActivity(), t.toString(), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
+
 
     private void timer(View view) {
         time1=view.findViewById(R.id.duration_tv);

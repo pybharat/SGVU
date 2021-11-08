@@ -90,16 +90,19 @@ public class profile extends AppCompatActivity {
 profile.setOnClickListener(new View.OnClickListener() {
     @Override
     public void onClick(View v) {
-        Intent i=new Intent(profile.this,user_update.class);
-        i.putExtra("position",0);
+        Intent i=new Intent(profile.this,update_profile.class);
+        i.putExtra("name",u_name);
+        i.putExtra("contact",contact);
+        i.putExtra("email",email);
+        i.putExtra("img_url",img_u);
         startActivity(i);
     }
 });
 password.setOnClickListener(new View.OnClickListener() {
     @Override
     public void onClick(View v) {
-        Intent i=new Intent(profile.this,user_update.class);
-        i.putExtra("position",1);
+        Intent i=new Intent(profile.this,change_password.class);
+        i.putExtra("base","profile");
         startActivity(i);
     }
 });

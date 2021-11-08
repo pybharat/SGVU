@@ -80,4 +80,8 @@ public interface Api {
     Call<String>getuserinfo(
             @Body JsonObject jsonObject
     );
+    @POST("Dashboard/updateuserpassword")
+    Call<String>updateuserpassword(
+            @Body JsonObject jsonObject
+    );
 }
