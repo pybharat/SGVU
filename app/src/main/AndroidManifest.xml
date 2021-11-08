@@ -14,7 +14,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SGVU"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.Update_notice"></activity>
+        <activity android:name=".activities.change_password"></activity>
+        <activity android:name=".activities.Update_notice" />
         <activity android:name=".activities.user_update" />
         <activity
             android:name=".activities.profile"

@@ -26,6 +26,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 
 import com.bharatapp.sgvu.R;
+import com.bharatapp.sgvu.activities.change_password;
 import com.bharatapp.sgvu.activities.dashboard;
 import com.bharatapp.sgvu.activities.login;
 import com.bharatapp.sgvu.process;
@@ -313,8 +314,10 @@ public class emailLogin extends Fragment {
                         JSONObject obj = new JSONObject(response.body());
                         if(Integer.parseInt(obj.get("code").toString())==200)
                         {
-                            change_pass();
-
+                            Intent i=new Intent(getActivity(), change_password.class);
+                            i.putExtra("base","login");
+                            i.putExtra("email",email3);
+                            startActivity(i);
                         }
                         else if(Integer.parseInt(obj.get("code").toString())==400) {
                             msg= obj.getString("message");
@@ -345,7 +348,7 @@ public class emailLogin extends Fragment {
     private void change_pass() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         ViewGroup viewGroup = view.findViewById(android.R.id.content);
-        View dialogView = LayoutInflater.from(getActivity().getApplicationContext()).inflate(R.layout.change_password, viewGroup, false);
+        View dialogView = LayoutInflater.from(getActivity().getApplicationContext()).inflate(R.layout.changepass, viewGroup, false);
         builder.setView(dialogView);
         AlertDialog alertDialog = builder.create();
         alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));

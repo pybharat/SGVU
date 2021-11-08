@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.bharatapp.sgvu.R;
 import com.bharatapp.sgvu.fragments.add_notice;
-import com.bharatapp.sgvu.fragments.change_password;
 import com.bharatapp.sgvu.fragments.update_profile;
 
 public class user_update extends AppCompatActivity {
@@ -42,7 +41,7 @@ public class user_update extends AppCompatActivity {
         }
         else if (position==1)
         {
-            loadfragment(new change_password());
+            //loadfragment(new change_password());
             heading.setText("CHANGE PASSWORD");
         }
 
