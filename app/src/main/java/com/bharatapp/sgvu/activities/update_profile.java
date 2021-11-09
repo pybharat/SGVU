@@ -17,6 +17,8 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -36,12 +38,13 @@ import java.io.IOException;
 
 public class update_profile extends AppCompatActivity {
 String uname,ucontact,uemail,uimg,img1;
-EditText name,contact,email;
-Button upload,update;
+EditText name,contact;
+Button upload,update,verify;
 ImageButton img;
 process process;
 RetrofitClient retrofitClient;
 SharedPreferences sharedPreferences;
+int verifycontact=0;
 private  static  final String SHARED_PREF_NAME="sgvu";
 private  static  final String KEY_USERID="userid";
 private  static  final String KEY_TOKEN="token";
@@ -56,7 +59,7 @@ private Uri filePath;
         process=new process(update_profile.this);
         name=findViewById(R.id.name);
         contact=findViewById(R.id.contact1);
-        email=findViewById(R.id.email7);
+        verify=findViewById(R.id.verify_no);
         upload=findViewById(R.id.uploadimg);
         update=findViewById(R.id.update1);
         img=findViewById(R.id.upload_img);
@@ -75,10 +78,6 @@ private Uri filePath;
         if(!ucontact.isEmpty())
         {
             contact.setText(ucontact);
-        }
-        if(!uemail.isEmpty())
-        {
-            email.setText(uemail);
         }
         if(!uimg.isEmpty())
         {
@@ -108,12 +107,38 @@ private Uri filePath;
                 uploadtext();
             }
         });
+        contact.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            verify.setVisibility(View.VISIBLE);
+            }
+        });
+        verify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                verifyContact();
+            }
+        });
+    }
+
+    private void verifyContact() {
+
     }
 
     private void uploadtext() {
         uname=name.getText().toString();
         ucontact=contact.getText().toString();
-        uemail=email.getText().toString();
+        
         if(uname.isEmpty())
         {
             name.requestFocus();
@@ -124,11 +149,6 @@ private Uri filePath;
         {
             contact.requestFocus();
             contact.setError("Enter Short Description.");
-        }
-        else if(uemail.isEmpty())
-        {
-            email.requestFocus();
-            email.setError("Enter Full Description.");
         }
         if(img1==null) {
             uimg = "default.jpeg";
