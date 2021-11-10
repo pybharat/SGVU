@@ -1,6 +1,7 @@
 package com.bharatapp.sgvu.activities;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -16,15 +17,20 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bharatapp.sgvu.R;
@@ -33,11 +39,20 @@ import com.bharatapp.sgvu.retrofit.RetrofitClient;
 import com.bumptech.glide.Glide;
 import com.google.gson.JsonObject;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class update_profile extends AppCompatActivity {
-String uname,ucontact,uemail,uimg,img1;
+String uname,ucontact,uemail,uimg,img1,ucontact1;
 EditText name,contact;
 Button upload,update,verify;
 ImageButton img;
@@ -45,6 +60,12 @@ process process;
 RetrofitClient retrofitClient;
 SharedPreferences sharedPreferences;
 int verifycontact=0;
+EditText otp1,otp2,otp3,otp4,otp5,otp6;
+Button register,verifyotp;
+int otp,userid;
+String msg;
+TextView time1,resend;
+ProgressBar progressBar;
 private  static  final String SHARED_PREF_NAME="sgvu";
 private  static  final String KEY_USERID="userid";
 private  static  final String KEY_TOKEN="token";
@@ -63,11 +84,12 @@ private Uri filePath;
         upload=findViewById(R.id.uploadimg);
         update=findViewById(R.id.update1);
         img=findViewById(R.id.upload_img);
+        retrofitClient=new RetrofitClient();
         Bundle bundle=getIntent().getExtras();
         if(bundle!= null)
         {
          uname=bundle.getString("name");
-         ucontact=bundle.getString("contact");
+         ucontact1=bundle.getString("contact");
          uemail=bundle.getString("email");
          uimg=bundle.getString("img_url");
         }
@@ -75,9 +97,10 @@ private Uri filePath;
         {
             name.setText(uname);
         }
-        if(!ucontact.isEmpty())
+        if(!ucontact1.isEmpty())
         {
-            contact.setText(ucontact);
+            Log.d("bharat123",ucontact1);
+            contact.setText(ucontact1);
         }
         if(!uimg.isEmpty())
         {
@@ -132,23 +155,324 @@ private Uri filePath;
     }
 
     private void verifyContact() {
+        ucontact=contact.getText().toString();
+        if(ucontact.isEmpty())
+        {
+            contact.requestFocus();
+            contact.setError("Enter contact");
+        }
+        else if(ucontact.length()<10)
+        {
+            contact.requestFocus();
+            contact.setError("Enter proper contact");
+        }
+        else if(ucontact.matches(ucontact1))
+        {
+            contact.requestFocus();
+            contact.setError("Same contact");
+        }
+        sharedPreferences= getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
+        userid=sharedPreferences.getInt(KEY_USERID,0);
+        JsonObject contactdata=new JsonObject();
+        contactdata.addProperty("userid",userid);
+        contactdata.addProperty("number",ucontact);
+        retrofitClient.getWebService().updatemobileotp(contactdata).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if(response.isSuccessful()) {
 
+                    try {
+                        JSONObject obj = new JSONObject(response.body());
+                        Log.d("bharat123",response.body());
+                        if(Integer.parseInt(obj.get("code").toString())==200)
+                        {
+                            otp=Integer.parseInt(obj.get("otp").toString());
+                            verifyotp(otp);
+                        }
+                        else if(Integer.parseInt(obj.get("code").toString())==400) {
+                            Toast.makeText(update_profile.this,obj.getString("message"), Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else
+                {
+                    Toast.makeText(update_profile.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+
+            }
+        });
+
+    }
+
+    private void verifyotp(int otp) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(update_profile.this);
+        ViewGroup viewGroup = findViewById(android.R.id.content);
+        View dialogView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.otpverification, viewGroup, false);
+        builder.setView(dialogView);
+        AlertDialog alertDialog = builder.create();
+        alertDialog.setCanceledOnTouchOutside(false);
+        timer(dialogView);
+        alertDialog.show();
+        otp1=dialogView.findViewById(R.id.otp_no_1);
+        otp2=dialogView.findViewById(R.id.otp_no_2);
+        otp3=dialogView.findViewById(R.id.otp_no_3);
+        otp4=dialogView.findViewById(R.id.otp_no_4);
+        otp5=dialogView.findViewById(R.id.otp_no_5);
+        otp6=dialogView.findViewById(R.id.otp_no_6);
+        autoTextMover(otp1,otp2,otp3,otp4,otp5,otp6);
+        verifyotp=dialogView.findViewById(R.id.login3);
+        resend=dialogView.findViewById(R.id.resend_otp_tv);
+        verifyotp.setText("Verify");
+        resend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               resendotp();
+            }
+        });
+        verifyotp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String o1=otp1.getText().toString();
+                String o2=otp2.getText().toString();
+                String o3=otp3.getText().toString();
+                String o4=otp4.getText().toString();
+                String o5=otp5.getText().toString();
+                String o6=otp6.getText().toString();
+                if(o1.isEmpty() || o2.isEmpty() || o3.isEmpty() || o4.isEmpty() || o5.isEmpty()|| o6.isEmpty() )
+                {
+                    otp1.setError("");
+                    Toast.makeText(update_profile.this, "Enter OTP", Toast.LENGTH_SHORT).show();
+                }
+                String getotp=o1+o2+o3+o4+o5+o6;
+                int getotp1=Integer.parseInt(getotp);
+                verifyApi(getotp1,userid,otp,alertDialog);
+            }
+        });
+
+    }
+
+    private void resendotp() {
+        JsonObject contactdata=new JsonObject();
+        contactdata.addProperty("userid",userid);
+        contactdata.addProperty("number",ucontact);
+        retrofitClient.getWebService().updatemobileotp(contactdata).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                if(response.isSuccessful()) {
+
+                    try {
+                        JSONObject obj = new JSONObject(response.body());
+                        if(Integer.parseInt(obj.get("code").toString())==200)
+                        {
+                            Toast.makeText(update_profile.this,"OTP resend successfully.", Toast.LENGTH_SHORT).show();
+                        }
+                        else if(Integer.parseInt(obj.get("code").toString())==400) {
+                            Toast.makeText(update_profile.this,obj.getString("message"), Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else
+                {
+                    Toast.makeText(update_profile.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+
+            }
+        });
+    }
+
+
+    private void verifyApi(int getotp1, int userid, int otp,AlertDialog alertDialog) {
+        JsonObject jsonObject=new JsonObject();
+        jsonObject.addProperty("userid",userid);
+        jsonObject.addProperty("otp",getotp1);
+        retrofitClient.getWebService().verifyotp(jsonObject).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+
+                if(response.isSuccessful()) {
+                    try {
+                        JSONObject obj = new JSONObject(response.body());
+                        if(Integer.parseInt(obj.get("code").toString())==200)
+                        {
+                            Toast.makeText(update_profile.this,obj.getString("message"), Toast.LENGTH_SHORT).show();
+                            verifycontact=1;
+                            verify.setVisibility(View.INVISIBLE);
+                            contact.setText(ucontact);
+                            alertDialog.dismiss();
+                        }
+                        else if(Integer.parseInt(obj.get("code").toString())==400) {
+                            msg= obj.getString("message");
+                            Toast.makeText(update_profile.this,msg, Toast.LENGTH_SHORT).show();
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+                else
+                {
+                    Toast.makeText(update_profile.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Toast.makeText(update_profile.this, t.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void timer(View view) {
+        time1=view.findViewById(R.id.duration_tv);
+        resend=view.findViewById(R.id.resend_otp_tv);
+        progressBar=view.findViewById(R.id.progress_bar);
+        long duaration= TimeUnit.MINUTES.toMillis(1);
+        new CountDownTimer(duaration, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                String sDuration=String.format(Locale.ENGLISH,"%02d:%02d"
+                        ,TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished)
+                        , (TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished))-
+                                TimeUnit.MINUTES.toSeconds(TimeUnit.MICROSECONDS.toMinutes(millisUntilFinished)));
+                time1.setText(sDuration);
+            }
+
+            @Override
+            public void onFinish() {
+                resend.setVisibility(view.getVisibility());
+                progressBar.setVisibility(view.INVISIBLE);
+            }
+        }.start();
+    }
+
+    private void autoTextMover(EditText otp1, EditText otp2, EditText otp3, EditText otp4, EditText otp5, EditText otp6) {
+
+
+        otp1.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(otp1.getText().toString().length()==1)
+                {
+                    otp2.requestFocus();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+
+        });
+        otp2.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(otp2.getText().toString().length()==1)
+                {
+                    otp3.requestFocus();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+
+        });
+        otp3.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(otp3.getText().toString().length()==1)
+                {
+                    otp4.requestFocus();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+
+        });
+        otp4.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(otp4.getText().toString().length()==1)
+                {
+                    otp5.requestFocus();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+
+        });
+        otp5.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(otp5.getText().toString().length()==1)
+                {
+                    otp6.requestFocus();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+
+        });
     }
 
     private void uploadtext() {
         uname=name.getText().toString();
-        ucontact=contact.getText().toString();
-        
         if(uname.isEmpty())
         {
             name.requestFocus();
-            name.setError("Enter Title");
+            name.setError("Enter Name");
             return;
-        }
-        else if(ucontact.isEmpty())
-        {
-            contact.requestFocus();
-            contact.setError("Enter Short Description.");
         }
         if(img1==null) {
             uimg = "default.jpeg";
@@ -157,29 +481,52 @@ private Uri filePath;
         {
             uimg=img1;
         }
+
         sharedPreferences= getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         int userid=sharedPreferences.getInt(KEY_USERID,0);
-        String token=sharedPreferences.getString(KEY_TOKEN,null);
-        JsonObject auth=new JsonObject();
-
-        if(userid != 0 || token!=null)
+        JsonObject profiledata=new JsonObject();
+        profiledata.addProperty("userid",userid);
+        profiledata.addProperty("name",uname);
+        Log.d("bharat123",ucontact+" "+ucontact1);
+        if(verifycontact==1)
         {
-            auth.addProperty("id",userid);
-            auth.addProperty("token",token);
+            profiledata.addProperty("number",ucontact);
         }
         else
         {
-            Toast.makeText(update_profile.this, "Login Again", Toast.LENGTH_SHORT).show();
-            Intent i=new Intent(update_profile.this, login.class);
-            startActivity(i);
+            profiledata.addProperty("number",ucontact1);
         }
-        JsonObject profiledata=new JsonObject();
-        profiledata.addProperty("name",uname);
-        profiledata.addProperty("contact",ucontact);
         profiledata.addProperty("email",uemail);
-        profiledata.addProperty("img_url",uimg);
-        profiledata.add("auth",auth);
-        Log.d("bharat123",profiledata.toString());
+        profiledata.addProperty("img",uimg);
+        retrofitClient.getWebService().updateuserinfo1(profiledata).enqueue(new Callback<String>() {
+         @Override
+         public void onResponse(Call<String> call, Response<String> response) {
+                process.dismiss();
+             if(response.isSuccessful()) {
+                 try {
+                     JSONObject obj = new JSONObject(response.body());
+                     if(Integer.parseInt(obj.getString("code"))==200)
+                     {
+                         Toast.makeText(update_profile.this, "Profile Updated", Toast.LENGTH_SHORT).show();
+                         Intent i=new Intent(update_profile.this,dashboard.class);
+                         startActivity(i);
+                     }
+                    else
+                     {
+                         Toast.makeText(update_profile.this, obj.getString("message"), Toast.LENGTH_SHORT).show();
+                     }
+                 } catch (JSONException e) {
+                     e.printStackTrace();
+                 }
+             }
+         }
+
+         @Override
+         public void onFailure(Call<String> call, Throwable t) {
+             process.dismiss();
+             Toast.makeText(update_profile.this, t.toString(), Toast.LENGTH_SHORT).show();
+          }
+            });
     }
 
     private void uploadImg(String img1) {
@@ -203,7 +550,32 @@ private Uri filePath;
         image.addProperty("nid",userid);
         image.addProperty("img",img1);
         image.add("auth",auth);
-        Log.d("bharat123",image.toString());
+        retrofitClient.getWebService().updateprofileimg(image).enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                process.dismiss();
+                if(response.isSuccessful()) {
+                    try {
+                        JSONObject obj = new JSONObject(response.body());
+                        if(Integer.parseInt(obj.getString("code"))==200)
+                        {
+                            Toast.makeText(update_profile.this, obj.getString("message"), Toast.LENGTH_SHORT).show();
+                        }
+                        else
+                        {
+                            Toast.makeText(update_profile.this, obj.getString("message"), Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+
+            }
+        });
     }
 
     private void showFileChooser() {

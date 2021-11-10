@@ -84,4 +84,13 @@ public interface Api {
     Call<String>updateuserpassword(
             @Body JsonObject jsonObject
     );
+    @POST("Auth/updatemobileotp")
+    Call<String>updatemobileotp(
+            @Body JsonObject jsonObject
+    );
+    @POST("Auth/updateuserinfo1")
+    Call<String>updateuserinfo1(
+            @Body JsonObject jsonObject
+    );
+
 }
