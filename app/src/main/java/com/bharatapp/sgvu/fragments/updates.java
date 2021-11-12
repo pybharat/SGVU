@@ -4,6 +4,8 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -71,7 +73,11 @@ public class updates extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
+    if(!isConnected())
+    {
+        process.dismiss();
+        Toast.makeText(getActivity(), "Not Internet Connectivity.", Toast.LENGTH_SHORT).show();
+    }
         return view;
     }
 
@@ -139,5 +145,17 @@ public class updates extends Fragment {
 
     }
 });
+    }
+    public boolean isConnected() {
+        boolean connected = false;
+        try {
+            ConnectivityManager cm = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo nInfo = cm.getActiveNetworkInfo();
+            connected = nInfo != null && nInfo.isAvailable() && nInfo.isConnected();
+            return connected;
+        } catch (Exception e) {
+            Log.e("Connectivity Exception", e.getMessage());
+        }
+        return connected;
     }
 }
