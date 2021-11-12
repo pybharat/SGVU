@@ -63,7 +63,7 @@ int verifycontact=0;
 EditText otp1,otp2,otp3,otp4,otp5,otp6;
 Button register,verifyotp;
 int otp,userid;
-String msg;
+String msg,img21;
 TextView time1,resend;
 ProgressBar progressBar;
 private  static  final String SHARED_PREF_NAME="sgvu";
@@ -99,7 +99,6 @@ private Uri filePath;
         }
         if(!ucontact1.isEmpty())
         {
-            Log.d("bharat123",ucontact1);
             contact.setText(ucontact1);
         }
         if(!uimg.isEmpty())
@@ -183,7 +182,6 @@ private Uri filePath;
 
                     try {
                         JSONObject obj = new JSONObject(response.body());
-                        Log.d("bharat123",response.body());
                         if(Integer.parseInt(obj.get("code").toString())==200)
                         {
                             otp=Integer.parseInt(obj.get("otp").toString());
@@ -479,7 +477,7 @@ private Uri filePath;
         }
         else
         {
-            uimg=img1;
+            uimg=img21;
         }
 
         sharedPreferences= getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
@@ -487,7 +485,6 @@ private Uri filePath;
         JsonObject profiledata=new JsonObject();
         profiledata.addProperty("userid",userid);
         profiledata.addProperty("name",uname);
-        Log.d("bharat123",ucontact+" "+ucontact1);
         if(verifycontact==1)
         {
             profiledata.addProperty("number",ucontact);
@@ -547,7 +544,7 @@ private Uri filePath;
             startActivity(i);
         }
         JsonObject image=new JsonObject();
-        image.addProperty("nid",userid);
+        image.addProperty("userid",userid);
         image.addProperty("img",img1);
         image.add("auth",auth);
         retrofitClient.getWebService().updateprofileimg(image).enqueue(new Callback<String>() {
@@ -559,7 +556,7 @@ private Uri filePath;
                         JSONObject obj = new JSONObject(response.body());
                         if(Integer.parseInt(obj.getString("code"))==200)
                         {
-                            Toast.makeText(update_profile.this, obj.getString("message"), Toast.LENGTH_SHORT).show();
+                            img21=obj.getString("message");
                         }
                         else
                         {
