@@ -48,7 +48,7 @@ public class emailLogin extends Fragment {
     EditText email,password,email2,otp1,otp2,otp3,otp4,otp5,otp6,pass1,cpass;
     Button login1,sendotp,verifyotp,change;
     int userid,otp;
-    String msg,token,email1,email3,c_pass,cc_pass;
+    String msg,token,email1,email3,c_pass,cc_pass,type;
     TextView for_pass;
     RetrofitClient retrofitClient;
     TextView time1,resend;
@@ -57,6 +57,7 @@ public class emailLogin extends Fragment {
     private  static  final String SHARED_PREF_NAME="sgvu";
     private  static  final String KEY_USERID="userid";
     private  static  final String KEY_TOKEN="token";
+    private  static  final String KEY_TYPE="type";
     public process process;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -182,9 +183,11 @@ public class emailLogin extends Fragment {
                             Toast.makeText(getActivity(),msg, Toast.LENGTH_SHORT).show();
                             userid=Integer.parseInt(obj.get("userid").toString());
                             token=obj.getString("Token");
+                            type=obj.getString("user_type");
                             SharedPreferences.Editor editor=sharedPreferences.edit();
                             editor.putInt(KEY_USERID,userid);
                             editor.putString(KEY_TOKEN,token);
+                            editor.putString(KEY_TYPE,type);
                             editor.apply();
                             email.setText("");
                             password.setText("");

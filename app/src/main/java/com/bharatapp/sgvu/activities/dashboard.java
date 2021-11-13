@@ -77,11 +77,12 @@ public class dashboard extends AppCompatActivity implements NavigationView.OnNav
 View v,actionbar2;
 RetrofitClient retrofitClient;
 SharedPreferences sharedPreferences;
-String pid,ptitle,pfull_des,img_url,date1,img1;
+String pid,ptitle,pfull_des,img_url,date1,img1,type;
 String u_name1,img_u,email,contact;
 private  static  final String SHARED_PREF_NAME="sgvu";
 private  static  final String KEY_USERID="userid";
 private  static  final String KEY_TOKEN="token";
+private  static  final String KEY_TYPE="type";
 ImageView close,poster,actionimage,actionimage1;
 Toolbar toolbar;
 TextView maintitle,u_name;
@@ -114,6 +115,7 @@ String url4 = "https://seekho.live/bharat-sir/slider/h4.jpg";
         sharedPreferences=getSharedPreferences(SHARED_PREF_NAME,MODE_PRIVATE);
         int userid=sharedPreferences.getInt(KEY_USERID,0);
         String token=sharedPreferences.getString(KEY_TOKEN,null);
+                type=sharedPreferences.getString(KEY_TYPE,null);
 
         //viewpager
         ArrayList<SliderData> sliderDataArrayList = new ArrayList<>();
@@ -367,8 +369,14 @@ String url4 = "https://seekho.live/bharat-sir/slider/h4.jpg";
                 maintitle.setText("IMPORTANT LINKS");
                 break;
             case R.id.admin:
-                loadfragment(new admin_link());
-                maintitle.setText("ADMIN PANEL");
+                if(type.matches("admin")) {
+                    loadfragment(new admin_link());
+                    maintitle.setText("ADMIN PANEL");
+                }
+                else
+                {
+                    Toast.makeText(this, "You are not Admin.", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.shareapp:
                 final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
