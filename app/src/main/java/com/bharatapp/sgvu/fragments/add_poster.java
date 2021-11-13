@@ -177,7 +177,7 @@ public class add_poster extends Fragment {
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                Toast.makeText(getActivity(), t.toString(), Toast.LENGTH_SHORT).show();
+                Log.d("bharat",t.toString());
             }
         });
 
@@ -236,7 +236,7 @@ public class add_poster extends Fragment {
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                Toast.makeText(getActivity(), t.toString(), Toast.LENGTH_SHORT).show();
+                Log.d("bharat",t.toString());
             }
         });
 

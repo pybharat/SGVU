@@ -151,7 +151,7 @@ RetrofitClient retrofitClient;
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-            Toast.makeText(change_password.this,t.toString(),Toast.LENGTH_SHORT).show();
+            Log.d("bharat",t.toString());
             }
         });
     }
@@ -224,7 +224,7 @@ RetrofitClient retrofitClient;
             @Override
             public void onFailure(Call<String> call, Throwable t) {
                 process.dismiss();
-                Toast.makeText(change_password.this,t.toString(),Toast.LENGTH_SHORT).show();
+                Log.d("bharat",t.toString());
             }
         });
     }

@@ -67,6 +67,7 @@ public class profile extends AppCompatActivity {
                 {
                     case R.id.home:
                         Intent i2=new Intent(profile.this, dashboard.class);
+                        i2.putExtra("poster",1);
                         startActivity(i2);
                         return true;
                     case R.id.profile:

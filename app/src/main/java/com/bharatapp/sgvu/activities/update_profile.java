@@ -203,7 +203,7 @@ private Uri filePath;
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-
+                Log.d("bharat",t.toString());
             }
         });
 
@@ -287,7 +287,7 @@ private Uri filePath;
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-
+                Log.d("bharat",t.toString());
             }
         });
     }
@@ -331,7 +331,7 @@ private Uri filePath;
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                Toast.makeText(update_profile.this, t.toString(), Toast.LENGTH_SHORT).show();
+                Log.d("bharat",t.toString());
             }
         });
     }
@@ -506,6 +506,7 @@ private Uri filePath;
                      {
                          Toast.makeText(update_profile.this, "Profile Updated", Toast.LENGTH_SHORT).show();
                          Intent i=new Intent(update_profile.this,dashboard.class);
+                         i.putExtra("poster",1);
                          startActivity(i);
                      }
                     else
@@ -521,7 +522,7 @@ private Uri filePath;
          @Override
          public void onFailure(Call<String> call, Throwable t) {
              process.dismiss();
-             Toast.makeText(update_profile.this, t.toString(), Toast.LENGTH_SHORT).show();
+             Log.d("bharat",t.toString());
           }
             });
     }
@@ -570,7 +571,7 @@ private Uri filePath;
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-
+                Log.d("bharat",t.toString());
             }
         });
     }

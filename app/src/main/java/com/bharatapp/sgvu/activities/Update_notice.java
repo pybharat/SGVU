@@ -174,6 +174,7 @@ public class Update_notice extends AppCompatActivity {
                             process.dismiss();
                             Toast.makeText(Update_notice.this,"Notice Updated", Toast.LENGTH_SHORT).show();
                             Intent i=new Intent(Update_notice.this,dashboard.class);
+                            i.putExtra("poster",1);
                             startActivity(i);
                         }
                         else if(Integer.parseInt(obj.get("code").toString())==400) {
@@ -192,7 +193,7 @@ public class Update_notice extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-
+                Log.d("bharat",t.toString());
             }
         });
     }
@@ -249,7 +250,7 @@ public class Update_notice extends AppCompatActivity {
             @Override
             public void onFailure(Call<String> call, Throwable t) {
 
-                Toast.makeText(getApplicationContext(), t.toString(), Toast.LENGTH_SHORT).show();
+                Log.d("bharat",t.toString());
             }
         });
     }

@@ -12,6 +12,7 @@ import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.TextWatcher;
 
+import android.util.Log;
 import android.util.Patterns;
 
 import android.view.LayoutInflater;
@@ -142,7 +143,7 @@ public class emailLogin extends Fragment {
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                Toast.makeText(getActivity(), t.toString(), Toast.LENGTH_SHORT).show();
+                Log.d("bharat",t.toString());
             }
         });
     }
@@ -215,7 +216,7 @@ public class emailLogin extends Fragment {
             @Override
             public void onFailure(Call<String> call, Throwable t) {
                 process.dismiss();
-                Toast.makeText(getActivity(), t.toString(), Toast.LENGTH_SHORT).show();
+                Log.d("bharat",t.toString());
             }
         });
     }
@@ -300,7 +301,7 @@ public class emailLogin extends Fragment {
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                Toast.makeText(getActivity(), t.toString(), Toast.LENGTH_SHORT).show();
+                Log.d("bharat",t.toString());
             }
         });
     }
@@ -341,7 +342,7 @@ public class emailLogin extends Fragment {
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                Toast.makeText(getActivity(), t.toString(), Toast.LENGTH_SHORT).show();
+                Log.d("bharat",t.toString());
             }
         });
 

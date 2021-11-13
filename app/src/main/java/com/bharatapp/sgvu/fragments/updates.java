@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.bharatapp.sgvu.IsConnected;
 import com.bharatapp.sgvu.R;
 import com.bharatapp.sgvu.activities.login;
 import com.bharatapp.sgvu.adapter.myadaptar;
@@ -73,11 +74,13 @@ public class updates extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    if(!isConnected())
+        IsConnected isConnected1=new IsConnected(getActivity());
+    if(!isConnected1.isConnected())
     {
         process.dismiss();
         Toast.makeText(getActivity(), "Not Internet Connectivity.", Toast.LENGTH_SHORT).show();
     }
+
         return view;
     }
 
@@ -142,20 +145,9 @@ public class updates extends Fragment {
 
     @Override
     public void onFailure(Call<String> call, Throwable t) {
-
+        Log.d("bharat",t.toString());
     }
 });
     }
-    public boolean isConnected() {
-        boolean connected = false;
-        try {
-            ConnectivityManager cm = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo nInfo = cm.getActiveNetworkInfo();
-            connected = nInfo != null && nInfo.isAvailable() && nInfo.isConnected();
-            return connected;
-        } catch (Exception e) {
-            Log.e("Connectivity Exception", e.getMessage());
-        }
-        return connected;
-    }
+
 }

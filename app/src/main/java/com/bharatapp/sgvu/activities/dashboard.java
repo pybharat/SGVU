@@ -26,6 +26,7 @@ import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +46,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager.widget.ViewPager;
 
+import com.bharatapp.sgvu.IsConnected;
 import com.bharatapp.sgvu.R;
 import com.bharatapp.sgvu.adapter.SliderAdapter;
 import com.bharatapp.sgvu.fragments.admin_link;
@@ -100,6 +102,7 @@ ViewPager viewPager;
 int currentPage = 0;
 int p_count=0;
 Timer timer;
+Handler mHandler;
 final long DELAY_MS = 500;
 final long PERIOD_MS = 3000;
 String url1 = "https://seekho.live/bharat-sir/slider/h3.jpg";
@@ -146,17 +149,23 @@ String url4 = "https://seekho.live/bharat-sir/slider/h4.jpg";
             }
         }, DELAY_MS, PERIOD_MS);
         //custom dialog
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(dashboard.this);
-            ViewGroup viewGroup = findViewById(android.R.id.content);
-            dialogView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.customview, viewGroup, false);
-            retrofitClient=new RetrofitClient();
-            fetchpost(dialogView);
-            builder.setView(dialogView);
-            alertDialog = builder.create();
-            alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-            alertDialog.show();
-
+Bundle bundle=getIntent().getExtras();
+if(bundle!=null)
+{
+    p_count=bundle.getInt("poster");
+}
+if(p_count==0) {
+    AlertDialog.Builder builder = new AlertDialog.Builder(dashboard.this);
+    ViewGroup viewGroup = findViewById(android.R.id.content);
+    dialogView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.customview, viewGroup, false);
+    retrofitClient = new RetrofitClient();
+    fetchpost(dialogView);
+    builder.setView(dialogView);
+    alertDialog = builder.create();
+    alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+    alertDialog.show();
+}
+        Handler mhandler;
         close = (ImageView) dialogView.findViewById(R.id.clo);
         poster = (ImageView) dialogView.findViewById(R.id.pos);
         toolbar = findViewById(R.id.actionbar1);
@@ -171,12 +180,15 @@ String url4 = "https://seekho.live/bharat-sir/slider/h4.jpg";
         navigationView.setNavigationItemSelectedListener(this);
 //load notice fragment
         loadfragment(new updates());
-        View hView =  navigationView.getHeaderView(0);
+        View hView =  navigationView.inflateHeaderView(R.layout.header_navigation_drawer);
 
         actionimage1=hView.findViewById(R.id.aq);
         u_name=hView.findViewById(R.id.user_name);
-
-
+        getuserinfo();
+        if(!type.matches("admin")) {
+            Menu nav_Menu = navigationView.getMenu();
+            nav_Menu.findItem(R.id.admin).setVisible(false);
+        }
         close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -205,6 +217,7 @@ String url4 = "https://seekho.live/bharat-sir/slider/h4.jpg";
                 {
                     case R.id.home:
                         Intent i2=new Intent(dashboard.this,dashboard.class);
+                        i2.putExtra("poster",1);
                         startActivity(i2);
                         return true;
                     case R.id.profile:
@@ -223,11 +236,38 @@ String url4 = "https://seekho.live/bharat-sir/slider/h4.jpg";
 
         });
 
+        IsConnected connected=new IsConnected(dashboard.this);
+        if(!connected.isConnected())
+        {
+            this.mHandler = new Handler();
 
+           this.mHandler.postDelayed(m_Runnable,50000);
+        }
 
     }
 
+    private final Runnable m_Runnable = new Runnable()
+    {
+        public void run()
 
+        {
+            Intent i6=new Intent(dashboard.this,dashboard.class);
+            i6.putExtra("poster",1);
+            startActivity(i6);
+
+            dashboard.this.mHandler.postDelayed(m_Runnable, 5000);
+        }
+
+    };//runnable
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mHandler.removeCallbacks(m_Runnable);
+        finish();
+
+    }
 
     private void upload_img() {
         sharedPreferences= getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
@@ -278,7 +318,7 @@ String url4 = "https://seekho.live/bharat-sir/slider/h4.jpg";
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                Toast.makeText(dashboard.this, t.toString(), Toast.LENGTH_SHORT).show();
+                Log.d("bharat",t.toString());
             }
         });
     }
@@ -343,7 +383,7 @@ String url4 = "https://seekho.live/bharat-sir/slider/h4.jpg";
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                Toast.makeText(dashboard.this, t.toString(), Toast.LENGTH_SHORT).show();
+                Log.d("bharat",t.toString());
             }
         });
     }
@@ -375,6 +415,7 @@ String url4 = "https://seekho.live/bharat-sir/slider/h4.jpg";
                 }
                 else
                 {
+
                     Toast.makeText(this, "You are not Admin.", Toast.LENGTH_SHORT).show();
                 }
                 break;
@@ -506,12 +547,15 @@ String url4 = "https://seekho.live/bharat-sir/slider/h4.jpg";
                             else
                             {
                                 img_u="https://www.seekho.live/bharat-sir/sgvuapi/assets/profile/"+img_u;
+                                Glide.with(dashboard.this)
+                                        .load(img_u)
+                                        .centerCrop()
+                                        .into(actionimage1);
                             }
-                            Glide.with(dashboard.this)
-                                    .load(img_u)
-                                    .centerCrop()
-                                    .into(actionimage1);
-                            u_name.setText(u_name1);
+
+                            String name[]=u_name1.split(" ");
+                            String name1="Hello "+name[0];
+                            u_name.setText(name1);
 
                         } else if (Integer.parseInt(obj.get("code").toString()) == 400) {
                             Toast.makeText(getApplicationContext(), obj.getString("message"), Toast.LENGTH_SHORT).show();
@@ -529,7 +573,7 @@ String url4 = "https://seekho.live/bharat-sir/slider/h4.jpg";
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                Toast.makeText(dashboard.this, t.toString(), Toast.LENGTH_SHORT).show();
+                Log.d("bharat",t.toString());
             }
         });
     }

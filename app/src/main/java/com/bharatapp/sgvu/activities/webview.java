@@ -36,6 +36,7 @@ public class webview extends Activity implements AdvancedWebView.Listener {
                 {
                     case R.id.home:
                         Intent i=new Intent(webview.this, dashboard.class);
+                        i.putExtra("poster",1);
                         startActivity(i);
                         return true;
                     case R.id.profile:
