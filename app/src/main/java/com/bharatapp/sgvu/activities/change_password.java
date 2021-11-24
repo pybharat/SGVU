@@ -1,6 +1,7 @@
 package com.bharatapp.sgvu.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Context;
 import android.content.Intent;
@@ -30,6 +31,7 @@ String base="bharat";
 EditText pass1,cpass;
 Button change;
 String email3;
+Toolbar toolbar;
 SharedPreferences sharedPreferences;
 private  static  final String SHARED_PREF_NAME="sgvu";
 private  static  final String KEY_USERID="userid";
@@ -46,6 +48,9 @@ RetrofitClient retrofitClient;
         Bundle bundle=getIntent().getExtras();
         retrofitClient=new RetrofitClient();
         process=new process(change_password.this);
+        toolbar=(Toolbar)findViewById(R.id.actionbar1);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if(bundle != null)
         {
             base=bundle.getString("base");

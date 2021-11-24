@@ -17,4 +17,11 @@
         of the navigation drawer-->
     <string name="nav_open">Open</string>
     <string name="nav_close">Close</string>
+    <string-array name="user_type">
+        <item>Student</item>
+        <item>Perents</item>
+        <item>Faculty</item>
+        <item>Visitor</item>
+
+    </string-array>
 </resources>

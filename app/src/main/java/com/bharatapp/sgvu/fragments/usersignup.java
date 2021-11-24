@@ -14,9 +14,11 @@ import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +49,7 @@ public class usersignup extends Fragment {
     RetrofitClient retrofitClient;
     TextView time1,resend;
     ProgressBar progressBar;
+    Spinner user_type;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -57,6 +60,7 @@ public class usersignup extends Fragment {
         password=view.findViewById(R.id.password);
         cpassword=view.findViewById(R.id.cpassword);
         register=view.findViewById(R.id.signup);
+        user_type=view.findViewById(R.id.user_type);
         retrofitClient=new RetrofitClient();
         register.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,6 +68,10 @@ public class usersignup extends Fragment {
                 register();
             }
         });
+        ArrayAdapter<String> user=new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1,getResources().getStringArray(R.array.user_type));
+        user.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        user_type.setAdapter(user);
+
         return view;
     }
 
@@ -73,6 +81,7 @@ public class usersignup extends Fragment {
         String usernumber=number.getText().toString();
         String userpassword=password.getText().toString();
         String usercpassword=cpassword.getText().toString();
+        String u_type=user_type.getSelectedItem().toString();
         if(useremail.isEmpty())
         {
             email.requestFocus();
@@ -126,7 +135,8 @@ public class usersignup extends Fragment {
         jsonObject.addProperty("name",username);
         jsonObject.addProperty("number",usernumber);
         jsonObject.addProperty("password",userpassword);
-
+        jsonObject.addProperty("type",u_type);
+        Log.d("bharat123",jsonObject.toString());
         retrofitClient.getWebService().register(jsonObject).enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {

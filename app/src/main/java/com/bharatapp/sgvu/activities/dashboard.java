@@ -264,8 +264,8 @@ if(p_count==0) {
     @Override
     protected void onPause() {
         super.onPause();
-        mHandler.removeCallbacks(m_Runnable);
-        finish();
+       alertDialog.dismiss();
+
 
     }
 

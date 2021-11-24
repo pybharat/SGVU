@@ -28,7 +28,6 @@ public class detail_notice extends AppCompatActivity {
        imageView=(ImageView)findViewById(R.id.noticeimage);
        toolbar=(Toolbar)findViewById(R.id.actionbar1);
        setSupportActionBar(toolbar);
-
        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Bundle bundle = getIntent().getExtras();

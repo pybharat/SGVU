@@ -3,6 +3,7 @@ package com.bharatapp.sgvu.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -60,6 +61,7 @@ process process;
 RetrofitClient retrofitClient;
 SharedPreferences sharedPreferences;
 int verifycontact=0;
+    Toolbar toolbar;
 EditText otp1,otp2,otp3,otp4,otp5,otp6;
 Button register,verifyotp;
 int otp,userid;
@@ -85,6 +87,10 @@ private Uri filePath;
         update=findViewById(R.id.update1);
         img=findViewById(R.id.upload_img);
         retrofitClient=new RetrofitClient();
+        toolbar=(Toolbar)findViewById(R.id.actionbar1);
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Bundle bundle=getIntent().getExtras();
         if(bundle!= null)
         {

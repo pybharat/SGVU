@@ -5,13 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.update_profile">
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/size_50sp">
+        android:orientation="vertical"
+        >
+        <include layout="@layout/second_toolbar"/>
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/size_30sp"
             android:elevation="@dimen/size_10sp"
             app:cardCornerRadius="30dp"
             android:layout_gravity="center"
@@ -126,5 +129,5 @@
 
         </androidx.cardview.widget.CardView>
 
-    </ScrollView>
+    </LinearLayout>
 </RelativeLayout>

@@ -14,7 +14,7 @@
         app:cardCornerRadius="@dimen/size_30sp"
         android:layout_marginLeft="@dimen/size_50sp"
         android:layout_marginRight="@dimen/size_50sp"
-        android:layout_marginTop="@dimen/size_50sp"
+        android:layout_marginTop="@dimen/size_20sp"
         android:gravity="center">
 
         <LinearLayout
@@ -24,7 +24,7 @@
 
             <ImageView
                 android:id="@+id/imageView"
-                android:layout_width="15dp"
+                android:layout_width="8dp"
                 android:layout_marginLeft="@dimen/size_30sp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -37,7 +37,7 @@
                 android:layout_weight="1"
                 android:text="SGVU"
                 android:textColor="@color/navi_blue"
-                android:textSize="60dp"
+                android:textSize="40dp"
                 android:layout_marginLeft="@dimen/size_10sp"
                 android:layout_marginBottom="@dimen/size_5sp"
                 android:textStyle="bold"
@@ -52,7 +52,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
 
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:layout_marginLeft="@dimen/size_10sp"
             android:layout_marginRight="@dimen/size_10sp"
             android:layout_below="@+id/card1"
@@ -62,7 +62,7 @@
                 android:id="@+id/heading"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/size_20sp"
+                android:layout_marginTop="@dimen/size_10sp"
                 android:text="Login"
                 android:textColor="@color/navi_blue"
                 android:textSize="@dimen/size_30sp"

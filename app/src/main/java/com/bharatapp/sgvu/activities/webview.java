@@ -60,6 +60,8 @@ public class webview extends Activity implements AdvancedWebView.Listener {
             url = bundle.getString("url");
 
         }
+        mWebView.setCookiesEnabled(true);
+        mWebView.setMixedContentAllowed(true);
         mWebView.loadUrl(url);
     }
 
